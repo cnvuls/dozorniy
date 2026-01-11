@@ -62,7 +62,7 @@ class IncomingRawMessage:
 
 1. **Клонируйте репозиторий:**
 ```bash
-git clone [https://github.com/cnvuls/dozorniy.git](https://github.com/cnvuls/dozorniy.git)
+git clone https://github.com/cnvuls/dozorniy.git
 cd dozorniy
 
 ```
