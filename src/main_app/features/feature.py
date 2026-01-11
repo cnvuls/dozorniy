@@ -1,3 +1,5 @@
+# Copyright (c) 2026 hackhype. SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+
 from abc import ABC, abstractmethod
 
 from main_app.core.dispatcher import ResponseDispatcher

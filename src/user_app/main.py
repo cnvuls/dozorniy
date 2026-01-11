@@ -1,3 +1,5 @@
+# Copyright (c) 2026 hackhype. SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+
 import asyncio
 import os
 from dataclasses import dataclass

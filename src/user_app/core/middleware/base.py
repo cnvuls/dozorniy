@@ -1,3 +1,5 @@
+# Copyright (c) 2026 hackhype. SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+
 from typing import Awaitable, Callable, Protocol
 
 from core.responses.base import ResponseBase

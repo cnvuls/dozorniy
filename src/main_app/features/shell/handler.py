@@ -1,3 +1,5 @@
+# Copyright (c) 2026 hackhype. SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+
 from main_app.core.events import EventBus, OutputConnection
 from main_app.core.registry import FeatureRegistry
 from main_app.core.responses.base import ResponseHandler

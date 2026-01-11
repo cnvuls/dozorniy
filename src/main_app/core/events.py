@@ -1,3 +1,5 @@
+# Copyright (c) 2026 hackhype. SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
+
 import asyncio
 from abc import ABC
 from dataclasses import asdict, dataclass
