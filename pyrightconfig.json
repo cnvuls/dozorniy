@@ -1,6 +1,0 @@
-{
-  "venvPath": ".",
-  "venv": ".venv",
-  "useLibraryCodeForTypes": true,
-  "typeCheckingMode": "basic"
-}
