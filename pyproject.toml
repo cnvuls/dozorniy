@@ -1,0 +1,23 @@
+[project]
+name = "dozorniy"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aioconsole>=0.8.2",
+    "jit>=0.2.7",
+    "nuitka>=2.7.12",
+    "numba>=0.61.2",
+    "pydantic>=2.11.7",
+    "rich>=14.2.0",
+    "vidstream>=0.0.14",
+    "websocket>=0.2.1",
+    "websockets>=15.0.1",
+]
+
+[tool.uv.workspace]
+members = [
+    "src/main_app",
+    "src/user_app",
+]

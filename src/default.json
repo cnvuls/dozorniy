@@ -1,0 +1,10 @@
+{
+    "port": 8888,
+    "gui_type": "cli",
+    "connection_mode": "ws",
+    "log_level": "INFO",
+    "gui_state_depth": 50,
+    "video_enabled": false,
+    "video_host": "0.0.0.0",
+    "video_port": 9999
+}
