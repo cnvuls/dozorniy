@@ -1,8 +1,7 @@
 from typing import Dict, List, Type
 
+from main_app.core.middleware.base import MiddlewareNext, ResponseMiddleware
 from main_app.core.responses.base import ResponseBase, ResponseHandler
-from main_app.core.responses.middleware import (NextMiddleware,
-                                                ResponseMiddleware)
 
 
 class ResponseBus:
@@ -34,7 +33,7 @@ class ResponseBus:
 
         for middleware in reversed(self._middlewares):
 
-            def create_wrapper(m: ResponseMiddleware, n: NextMiddleware):
+            def create_wrapper(m: ResponseMiddleware, n: MiddlewareNext):
                 async def wrapper(res: ResponseBase) -> None:
                     await m(res, n)
 

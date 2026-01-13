@@ -1,4 +1,12 @@
+*.log
+TASKS.md
+logs/
 venv/
+.venv/
+env/
 __pycache__/
 *.pyc
-.env
+.vscode/
+.idea/
+*.tmp
+*.bak

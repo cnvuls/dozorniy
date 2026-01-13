@@ -1,0 +1,9 @@
+{
+  "include": [""],
+  "venvPath": ".",
+  "venv": ".venv",
+  "typeCheckingMode": "basic",
+  "reportDeprecated": false,
+  "reportExplicitAny": false,
+  "reportAny": false
+}

@@ -1,0 +1,9 @@
+{
+  "include": ["src"],
+  "venvPath": "/home/cnvls/python/dozorniy/src",
+  "venv": ".venv",
+  "typeCheckingMode": "basic",
+  "reportDeprecated": false,
+  "reportExplicitAny": false,
+  "reportAny": false
+}

@@ -1,5 +1,5 @@
 from core.responses.base import ResponseBase
 
 
-class ShellCommand(ResponseBase):
+class ShellResponse(ResponseBase):
     command: str

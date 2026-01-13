@@ -1,17 +1,19 @@
 import asyncio
 
 from core.dispatcher import RequestDispatcher
+from core.registry import FeatureRegistry
 from core.responses.base import ResponseHandler
-from features.shell.request import ShellRequest
-from features.shell.responses import ShellCommand
+
+from .request import ShellRequest
+from .responses import ShellResponse
 
 
-class ShellHandler(ResponseHandler[ShellCommand]):
+@FeatureRegistry.register(command_key="shell", command_model=ShellResponse)
+class ShellHandler(ResponseHandler[ShellResponse]):
     def __init__(self, dispatcher: RequestDispatcher):
         self.dispatcher = dispatcher
 
-    async def handle(self, command: ShellCommand):
-
+    async def handle(self, command: ShellResponse):
         process = await asyncio.create_subprocess_shell(
             command.command,
             stdout=asyncio.subprocess.PIPE,
@@ -19,14 +21,12 @@ class ShellHandler(ResponseHandler[ShellCommand]):
         )
 
         stdout, stderr = await process.communicate()
-
         output = stdout.decode(errors="replace").strip()
         error = stderr.decode(errors="replace").strip()
-
         result_text = output if output else error
 
         response = ShellRequest(
-            event_id=command.event_id,
+            event_id=command.event_id or "unknown",
             type="shell_result",
             stdout=result_text,
             stderr=error,
