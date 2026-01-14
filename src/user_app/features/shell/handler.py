@@ -1,6 +1,5 @@
 import asyncio
 
-from core.dispatcher import RequestDispatcher
 from core.registry import FeatureRegistry
 from core.responses.base import ResponseHandler
 
@@ -10,9 +9,6 @@ from .responses import ShellResponse
 
 @FeatureRegistry.register(command_key="shell", command_model=ShellResponse)
 class ShellHandler(ResponseHandler[ShellResponse]):
-    def __init__(self, dispatcher: RequestDispatcher):
-        self.dispatcher = dispatcher
-
     async def handle(self, command: ShellResponse):
         process = await asyncio.create_subprocess_shell(
             command.command,
@@ -33,4 +29,4 @@ class ShellHandler(ResponseHandler[ShellResponse]):
             exit_code=process.returncode or 0,
         )
 
-        await self.dispatcher.send(response)
+        await self.bus.publish(response)

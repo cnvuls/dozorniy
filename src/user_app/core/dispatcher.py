@@ -3,13 +3,12 @@
 import json
 from typing import Callable, Dict, List, Optional, Type
 
-from pydantic import ValidationError
-
 from core.events import EventBus, ReceiveMessage, SendMessage
 from core.middleware.base import RequestMiddleware, ResponseMiddleware
 from core.requests.base import RequestBase
 from core.responses.base import ResponseBase
 from core.responses.bus import ResponseBus
+from pydantic import ValidationError
 
 
 class ResponseDispatcher:
@@ -66,6 +65,7 @@ class RequestDispatcher:
     def __init__(self, bus: EventBus) -> None:
         self._event_bus: EventBus = bus
         self._middlewares: List[RequestMiddleware] = []
+        self._event_bus.subscribe(RequestBase, self.send)
 
     def add_middleware(self, middleware: RequestMiddleware):
         self._middlewares.append(middleware)

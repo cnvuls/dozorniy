@@ -3,12 +3,12 @@ import os
 import sys
 from dataclasses import dataclass
 
+from connection.websocket import WebsocketConnection
 from core.dispatcher import RequestDispatcher, ResponseDispatcher
 from core.events import EventBus
-from core.responses.bus import ResponseBus
-from connection.websocket import WebsocketConnection
-from core.registry import FeatureRegistry
 from core.loader import autodiscover_features
+from core.registry import FeatureRegistry
+from core.responses.bus import ResponseBus
 
 
 @dataclass
@@ -24,7 +24,7 @@ class ClientApp:
     def __init__(self, config: ClientConfig) -> None:
         self.config = config
         self.bus = EventBus()
-        
+
         self.connection = WebsocketConnection(
             bus=self.bus,
             port=config.port,
@@ -50,17 +50,21 @@ class ClientApp:
 
         for cmd_key, (model_cls, handler_cls) in features.items():
             try:
-                handler_instance = handler_cls(dispatcher=self.req_dispatcher)
+                handler_instance = handler_cls(bus=self.bus)
                 self.resp_dispatcher.bind(cmd_key, model_cls)
                 self.resp_bus.register(model_cls, handler_instance)
                 print(f"   ✅ Registered: '{cmd_key}' -> {handler_cls.__name__}")
             except Exception as e:
                 print(f"   ❌ Failed to register '{cmd_key}': {e}")
 
-        print(f"[ClientApp] Init complete. Total handlers: {len(self.resp_bus._handlers)}")
+        print(
+            f"[ClientApp] Init complete. Total handlers: {len(self.resp_bus._handlers)}"
+        )
 
     async def run(self) -> None:
-        print(f"[ClientApp] 🚀 Starting agent '{self.config.name}' on {self.config.host}:{self.config.port}")
+        print(
+            f"[ClientApp] 🚀 Starting agent '{self.config.name}' on {self.config.host}:{self.config.port}"
+        )
         await self.connection.main_loop()
 
 
