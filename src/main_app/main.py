@@ -7,7 +7,8 @@ sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 # Импорты ядра
 from main_app.connection.web_socket import WebSocketConnection
 from main_app.core.dispatcher import ResponseDispatcher
-from main_app.core.events import (EventBus, OutputConnection, SendingCommand,
+from main_app.core.events import (EventBus, IncomingRawMessage,
+                                  OutputConnection, SendingCommand,
                                   UpdateUserEvent)
 # Импорт загрузчика (Auto-discovery)
 from main_app.core.loader import autodiscover_features
@@ -42,16 +43,7 @@ class ServerApp:
         self._setup_server_subscriptions()
 
     def _load_and_setup_features(self):
-        """
-        1. Импортируем модули -> Декораторы наполняют FeatureRegistry
-        2. Достаем данные из FeatureRegistry и настраиваем диспетчер
-        """
-        print(f"📂 Looking for features in path: {FEATURES_PATH}")  # <-- Добавь это
-        print(f"📦 As python package: {FEATURES_PACKAGE}")
-        autodiscover_features(FEATURES_PATH, FEATURES_PACKAGE, "feature")
-        if not os.path.exists(FEATURES_PATH):
-            print("❌ ERROR: Path does not exist!")
-            return
+        autodiscover_features()
         features_meta = FeatureRegistry.get_features()
 
         if not features_meta:
@@ -71,6 +63,7 @@ class ServerApp:
         self.bus.subscribe(OutputConnection, self._console_logger)
         self.bus.subscribe(UpdateUserEvent, self._user_logger)
         self.bus.subscribe(UpdateUserEvent, self._on_user_connect)
+        self.bus.subscribe(IncomingRawMessage, self._console_logger)
 
     async def _console_logger(self, event: OutputConnection):
         print(f"🖥️  [SERVER LOG]: {event.text}")

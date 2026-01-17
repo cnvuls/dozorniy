@@ -1,23 +1,38 @@
-from typing import Any, TypeVar
+# Copyright (c) 2026 hackhype. SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 
-from core.responses.base import ResponseBase, ResponseHandler
+from dataclasses import dataclass
+from typing import Any, List, Tuple, Type
 
-H = TypeVar("H", bound=ResponseHandler)
+
+@dataclass
+class FeatureMeta:
+    command_key: str
+    response_model: Type[Any]
+    handler_cls: Type[Any]
 
 
 class FeatureRegistry:
-    _registry: dict[str, tuple[type[ResponseBase], type[ResponseHandler]]] = {}
+    _features: List[FeatureMeta] = []
 
     @classmethod
-    def register(cls, command_key: str, command_model: type[ResponseBase]):
-        def decorator(handler_cls: type[H]) -> type[H]:
-            cls._registry[command_key] = (command_model, handler_cls)
+    def register(cls, command_key: str, response_model: Type[Any]):
+        """
+        Декоратор для регистрации хендлеров.
+        Связывает: строку JSON -> Pydantic модель -> Класс Хендлера
+        """
+
+        def decorator(handler_cls):
+            cls._features.append(
+                FeatureMeta(
+                    command_key=command_key,
+                    response_model=response_model,
+                    handler_cls=handler_cls,
+                )
+            )
             return handler_cls
 
         return decorator
 
     @classmethod
-    def get_features(
-        cls,
-    ) -> dict[str, tuple[type[ResponseBase], type[ResponseHandler]]]:
-        return cls._registry
+    def get_features(cls) -> List[FeatureMeta]:
+        return cls._features

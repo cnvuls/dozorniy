@@ -5,7 +5,6 @@ import logging
 from typing import Optional
 
 import websockets
-
 from connection.abstracts import ConnectionBase
 from core.events import EventBus, ReceiveMessage, SendMessage
 
@@ -33,6 +32,7 @@ class WebsocketConnection(ConnectionBase):
         if self.socket is None:
             self.logger.warning("Попытка отправить сообщение при отсутствующем сокете.")
             return
+        print("lol")
         await self.socket.send(event.text)
 
     async def receive_message(self, data: str) -> None:

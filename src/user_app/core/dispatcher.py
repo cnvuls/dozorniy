@@ -74,6 +74,7 @@ class RequestDispatcher:
         data = request.model_dump(mode="json")
 
         async def send_to_bus(current_data: dict) -> None:
+
             await self._event_bus.publish(SendMessage(text=json.dumps(current_data)))
 
         wrapped_action = send_to_bus

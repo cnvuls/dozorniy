@@ -48,14 +48,16 @@ class ClientApp:
         if not features:
             print("[ClientApp] ⚠️ No features found!")
 
-        for cmd_key, (model_cls, handler_cls) in features.items():
+        for meta in features:
             try:
-                handler_instance = handler_cls(bus=self.bus)
-                self.resp_dispatcher.bind(cmd_key, model_cls)
-                self.resp_bus.register(model_cls, handler_instance)
-                print(f"   ✅ Registered: '{cmd_key}' -> {handler_cls.__name__}")
+                handler_instance = meta.handler_cls(bus=self.bus)
+                self.resp_dispatcher.bind(meta.command_key, meta.response_model)
+                self.resp_bus.register(meta.response_model, handler_instance)
+                print(
+                    f"   ✅ Registered: '{meta.command_key}' -> {meta.handler_cls.__name__}"
+                )
             except Exception as e:
-                print(f"   ❌ Failed to register '{cmd_key}': {e}")
+                print(f"   ❌ Failed to register '{meta.command_key}': {e}")
 
         print(
             f"[ClientApp] Init complete. Total handlers: {len(self.resp_bus._handlers)}"

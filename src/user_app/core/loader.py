@@ -10,7 +10,6 @@ def autodiscover_features(base_package: str = "user_app.features"):
     :param base_package: Путь импорта для Python (например, "user_app.features")
     """
     current_dir = os.path.dirname(os.path.abspath(__file__))
-
     user_app_root = os.path.dirname(current_dir)
 
     features_path = os.path.join(user_app_root, "features")

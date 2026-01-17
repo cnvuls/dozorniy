@@ -44,7 +44,7 @@ class EventBus:
         event_type = type(event)
 
         handlers = self._cache.get(event_type)
-
+        print(type(event))
         if handlers is None:
             handlers = []
 

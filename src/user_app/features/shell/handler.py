@@ -7,9 +7,10 @@ from .request import ShellRequest
 from .responses import ShellResponse
 
 
-@FeatureRegistry.register(command_key="shell", command_model=ShellResponse)
+@FeatureRegistry.register(command_key="shell", response_model=ShellResponse)
 class ShellHandler(ResponseHandler[ShellResponse]):
     async def handle(self, command: ShellResponse):
+
         process = await asyncio.create_subprocess_shell(
             command.command,
             stdout=asyncio.subprocess.PIPE,
@@ -28,5 +29,5 @@ class ShellHandler(ResponseHandler[ShellResponse]):
             stderr=error,
             exit_code=process.returncode or 0,
         )
-
+        print(response)
         await self.bus.publish(response)
