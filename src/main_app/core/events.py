@@ -25,7 +25,6 @@ class IncomingRawMessage(AbstractEvent):
     user_id: int
     text: str
 
-@dataclass
 
 @dataclass
 class OutgoingRawMessage(AbstractEvent):
