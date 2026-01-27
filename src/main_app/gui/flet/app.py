@@ -1,30 +1,48 @@
 import flet as ft
+from flet import controls
 
 
 class UserItem(ft.Container):
-    def __init__(self):
+    def __init__(self, user_id:int):
         super().__init__(
             padding=10,
             border_radius=8,
-            bgcolor=ft.Colors.ON_SURFACE_VARIANT,
-            animate=ft.Animation(duration=200, curve=ft.AnimationCurve.EASE_OUT),
-            on_hover=self.toogle_hover,
+            border=ft.border.all(1, ft.Colors.PRIMARY)
         )
+        self.preview = ft.Image(
+            src=f"https://picsum.photos/320/200?random={user_id}",
+            width=160,
+            height=90,
+            fit=ft.BoxFit.COVER,
+            border_radius=10
+        )
+        self.content=ft.Row(
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            controls=[
+                ft.Row(
+                    controls=[
+                        self.preview,
+                        ft.Text(f"Индекс : {user_id}",color=ft.Colors.PRIMARY)
+                    ],
 
-    async def toogle_hover(self, e):
-        self.bgcolor = (
-            ft.Colors.ON_INVERSE_SURFACE
-            if e.data == "true"
-            else ft.Colors.ON_SURFACE_VARIANT
+                ),
+                ft.Row(
+                    controls=[
+                        ft.IconButton(ft.Icons.EXTENSION)
+                    ],
+
+                )
+            ] 
         )
-        self.update()
 
 
 class ListUsers(ft.ListView):
     def __init__(self):
         super().__init__(spacing=10, scroll=ft.ScrollMode.AUTO, expand=True)
-        l = UserItem()
-        self.controls.append(l)
+        for i in range(100):
+            l = UserItem(i)
+            print(i)
+            self.controls.append(l)
 
     async def adduser(self, user_id: int, user_name: str):
         pass
@@ -97,8 +115,8 @@ class DozorniyApp:
 
     async def main(self, page: ft.Page):
         self.page = page
-        self.page.title = "Dozorniy RMM [OOP Edition]"
-        self.page.theme = ft.Theme(color_scheme_seed="orange")
+        self.page.title = "Dozorniy RMM"
+        self.page.theme = ft.Theme(color_scheme_seed="blue")
         self.page.padding = 0
 
         self.content_area = ft.Container(
