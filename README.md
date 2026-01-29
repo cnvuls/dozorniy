@@ -79,7 +79,7 @@ venv\Scripts\activate     # Для Windows
 
 ## 📜 Лицензия (License)
 
-Copyright (c) 2026 hackhype.
+Copyright (c) 2026 cnvls.
 
 Этот проект лицензирован на условиях **PolyForm Noncommercial License 1.0.0**.
 
