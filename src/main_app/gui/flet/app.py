@@ -1,39 +1,36 @@
 import flet as ft
-from flet import controls
-
+from main_app.gui.flet.components.user_list import ListUsers
 from main_app.gui.flet.views.dashboard import DashboardPage
 from main_app.gui.flet.views.settings import SettingsPage
 
 class DozorniyApp:
     def __init__(self):
         self.page: ft.Page | None = None
-        self.content_area: ft.Container | None = None
 
-        self.dashboard = DashboardPage()
+        self.user_list_view = ListUsers()
+
+        self.dashboard = DashboardPage(user_list=self.user_list_view)
         self.settings = SettingsPage()
 
+        self.pages: dict[int, ft.Container] = {
+            0: ft.Container(content=self.dashboard, visible=True, expand=True),
+            1: ft.Container(content=ft.Text("Плагины в разработке"), visible=False, expand=True),
+            2: ft.Container(content=self.settings, visible=False, expand=True),
+        }
+
     async def navigate(self, e):
-        selected_index = e.control.selected_index
-
-        if self.content_area:
-            if selected_index == 0:
-                self.content_area.content = self.dashboard
-            elif selected_index == 1:
-                self.content_area.content = self.settings
-
-            self.content_area.update()
+        selected_index = int(e.data)
+        if self.page is None:
+            return
+        for index, page_container in self.pages.items():
+            page_container.visible = (index == selected_index)
+        self.page.update()
 
     async def main(self, page: ft.Page):
         self.page = page
         self.page.title = "Dozorniy RMM"
-        self.page.theme = ft.Theme(color_scheme_seed="blue")
+        self.page.theme = ft.Theme(color_scheme_seed="red")
         self.page.padding = 0
-
-        self.content_area = ft.Container(
-            content=self.dashboard,
-            expand=True,
-        )
-
         self.sidebar = ft.NavigationRail(
             selected_index=0,
             label_type=ft.NavigationRailLabelType.ALL,
@@ -46,15 +43,22 @@ class DozorniyApp:
             on_change=self.navigate,
         )
 
-        main_layout_controls: list[ft.Control] = [
-            self.sidebar,
-            ft.VerticalDivider(width=1),
-            self.content_area,
-        ]
+        self.main_stack = ft.Stack(
+            controls=list(self.pages.values()),
+            expand=True
+        )
 
-        layout = ft.Row(controls=main_layout_controls, expand=True, spacing=0)
+        layout = ft.Row(
+            controls=[
+                self.sidebar,
+                ft.VerticalDivider(width=1),
+                self.main_stack,
+            ],
+            expand=True,
+            spacing=0
+        )
+
         self.page.add(layout)
-
 
 if __name__ == "__main__":
     app = DozorniyApp()
