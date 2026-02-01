@@ -1,7 +1,7 @@
 from typing import Dict, List, Type
 
-from main_app.core.middleware.base import MiddlewareNext, ResponseMiddleware
-from main_app.core.responses.base import ResponseBase, ResponseHandler
+from core.middleware.base import MiddlewareNext, ResponseMiddleware
+from core.responses.base import ResponseBase, ResponseHandler
 
 
 class ResponseBus:

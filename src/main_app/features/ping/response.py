@@ -1,4 +1,4 @@
-from main_app.core.responses.base import \
+from core.responses.base import \
     ResponseBase  # INFO: Смена импорта на Response
 
 

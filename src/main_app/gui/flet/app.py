@@ -1,12 +1,14 @@
 import flet as ft
-from main_app.gui.flet.components.user_list import ListUsers
-from main_app.gui.flet.views.dashboard import DashboardPage
-from main_app.gui.flet.views.settings import SettingsPage
+from core.events import EventBus
+from gui.abstracts import UiAbstract
+from gui.flet.components.user_list import ListUsers
+from gui.flet.views.dashboard import DashboardPage
+from gui.flet.views.settings import SettingsPage
 
-class DozorniyApp:
-    def __init__(self):
+class DozorniyApp(UiAbstract):
+    def __init__(self,bus: EventBus):
         self.page: ft.Page | None = None
-
+        self.bus: EventBus = bus
         self.user_list_view = ListUsers()
 
         self.dashboard = DashboardPage(user_list=self.user_list_view)
@@ -23,7 +25,7 @@ class DozorniyApp:
         if self.page is None:
             return
         for index, page_container in self.pages.items():
-            page_container.visible = (index == selected_index)
+            page_container.visible = (index == selected_index) 
         self.page.update()
 
     async def main(self, page: ft.Page):
@@ -60,6 +62,6 @@ class DozorniyApp:
 
         self.page.add(layout)
 
-if __name__ == "__main__":
-    app = DozorniyApp()
-    ft.app(target=app.main)
+    async def main_loop(self):
+        await ft.app_async(main=self.main)
+

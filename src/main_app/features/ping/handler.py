@@ -3,11 +3,11 @@ import time
 # INFO: Импорты изменены согласно новой логике именования
 from features.ping.response import PingResponse  # Входящий (от агента)
 
-from main_app.core.events import EventBus
-from main_app.core.registry import FeatureRegistry
-from main_app.core.responses.base import \
+from core.events import EventBus
+from core.registry import FeatureRegistry
+from core.responses.base import \
     ResponseHandler  # INFO: Наследуемся от ResponseHandler
-from main_app.features.ping.request import \
+from features.ping.request import \
     PingRequest  # Исходящий (от сервера)
 
 

@@ -1,4 +1,4 @@
-from main_app.core.requests.base import \
+from core.requests.base import \
     RequestBase  # INFO: Смена импорта на Request
 
 

@@ -5,9 +5,9 @@ import websockets
 # from utils.get_ipadress import getIpAddress # <--- Убрали, чтобы не висло
 from websockets import serve
 
-from main_app.config.loader import load_config
-from main_app.connection.abstracts import ConnectionBase
-from main_app.core.events import (EventBus, IncomingRawMessage,
+from config.loader import load_config
+from connection.abstracts import ConnectionBase
+from core.events import (EventBus, IncomingRawMessage,
                                   OutputConnection, SendingCommand,
                                   UpdateUserEvent)
 

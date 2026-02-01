@@ -1,5 +1,5 @@
 import asyncio
-from main_app.gui.flet.components.user_item import UserItem
+from gui.flet.components.user_item import UserItem
 import flet as ft
 
 class ListUsers(ft.ListView):
@@ -9,6 +9,6 @@ class ListUsers(ft.ListView):
             spacing=10,
             padding=10
         )
-        for i in range(40):
-
+  
+        for i in range(20):
             self.controls.append(UserItem(i, f"Dozorniy_Agent_{i}"))

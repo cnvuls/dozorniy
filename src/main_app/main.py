@@ -3,19 +3,20 @@ import os
 import sys
 from dataclasses import dataclass
 
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
+from gui.gui_factory import GuiFactory
+
 # Импорты ядра
-from main_app.connection.web_socket import WebSocketConnection
-from main_app.core.dispatcher import ResponseDispatcher
-from main_app.core.events import (EventBus, IncomingRawMessage,
+from connection.web_socket import WebSocketConnection
+from core.dispatcher import ResponseDispatcher
+from core.events import (EventBus, IncomingRawMessage,
                                   OutputConnection, SendingCommand,
                                   UpdateUserEvent)
 # Импорт загрузчика (Auto-discovery)
-from main_app.core.loader import autodiscover_features
-from main_app.core.registry import FeatureRegistry
-from main_app.core.responses.responsebus import ResponseBus
+from core.loader import autodiscover_features
+from core.registry import FeatureRegistry
+from core.responses.responsebus import ResponseBus
 # Импорт Request-модели для создания команд
-from main_app.features.shell.request import ShellRequest
+from features.shell.request import ShellRequest
 
 
 @dataclass
@@ -26,7 +27,7 @@ class ServerConfig:
 
 # Константы для путей
 FEATURES_PATH = os.path.join(os.path.dirname(__file__), "features")
-FEATURES_PACKAGE = "main_app.features"
+FEATURES_PACKAGE = "features"
 
 
 class ServerApp:
@@ -36,7 +37,7 @@ class ServerApp:
         self.bus = EventBus()
         self.resp_bus = ResponseBus()
         self.dispatcher = ResponseDispatcher(self.resp_bus, self.bus)
-
+        self.gui = GuiFactory.create_object(bus=self.bus)
         self.server = WebSocketConnection(self.bus)
         self._load_and_setup_features()
 
@@ -93,8 +94,17 @@ class ServerApp:
             await self.bus.publish(command_event)
 
     async def run(self):
-        print("--- 🛡️ ЗАПУСК СЕРВЕРА DOZORNIY ---")
-        await self.server.main()
+        print("--- 🛡️ ПОДГОТОВКА ЗАПУСКА DOZORNIY ---")
+        
+        # Запускаем сервер и GUI одновременно. 
+        # Программа будет ждать выполнения ОБОИХ процессов.
+        try:
+            await asyncio.gather(
+                self.server.main(),    # Твой WebSocket сервер
+                self.gui.main_loop()   # Твой Flet GUI
+            )
+        except Exception as e:
+            print(f"❌ Ошибка при работе приложения: {e}")
 
 
 async def main():
@@ -105,8 +115,6 @@ async def main():
 
 if __name__ == "__main__":
     try:
-        if sys.platform == "win32":
-            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
         asyncio.run(main())
     except KeyboardInterrupt:
         print("\n--- Сервер остановлен ---")

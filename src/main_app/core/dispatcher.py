@@ -3,11 +3,11 @@ from typing import Any, Awaitable, Callable, Dict, List, Optional, Type, cast
 
 from pydantic import ValidationError
 
-from main_app.core.events import EventBus, IncomingRawMessage, SendingCommand
-from main_app.core.middleware.base import MiddlewareNext, ResponseMiddleware
-from main_app.core.requests.base import RequestBase
-from main_app.core.responses.base import ResponseBase
-from main_app.core.responses.responsebus import ResponseBus
+from core.events import EventBus, IncomingRawMessage, SendingCommand
+from core.middleware.base import MiddlewareNext, ResponseMiddleware
+from core.requests.base import RequestBase
+from core.responses.base import ResponseBase
+from core.responses.responsebus import ResponseBus
 
 
 class ResponseDispatcher:

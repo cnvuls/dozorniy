@@ -1,4 +1,4 @@
-from main_app.core.requests.base import RequestBase
+from core.requests.base import RequestBase
 
 
 class ShellRequest(RequestBase):

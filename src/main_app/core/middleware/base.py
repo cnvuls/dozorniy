@@ -1,7 +1,7 @@
 from collections.abc import Awaitable, Callable
 from typing import Any, Protocol
 
-from main_app.core.responses.base import ResponseBase
+from core.responses.base import ResponseBase
 
 MiddlewareNext = Callable[[dict[str, Any]], Awaitable[None]]
 

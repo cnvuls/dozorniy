@@ -1,4 +1,4 @@
-from main_app.core.responses.base import ResponseBase
+from core.responses.base import ResponseBase
 
 
 class ShellResponse(ResponseBase):

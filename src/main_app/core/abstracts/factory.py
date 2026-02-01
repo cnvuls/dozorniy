@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from main_app.core.events import EventBus
+from core.events import EventBus
 
 
 class AbstractFactory(ABC):
