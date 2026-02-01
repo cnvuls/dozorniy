@@ -71,7 +71,7 @@ cd dozorniy
 2. **Создайте виртуальное окружение:**
 ```bash
 uv venv
-source venv/bin/activate.fish  # Для Linux/MacOS
+source venv/bin/activate.fish  # Для Linux
 venv\Scripts\activate     # Для Windows
 ```
 
