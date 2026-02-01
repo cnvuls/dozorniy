@@ -95,6 +95,6 @@ Copyright (c) 2026 cnvls.
 Если вы представляете образовательное учреждение и хотите внедрить систему, или у вас есть вопросы по архитектуре:
 
 * GitHub Issues: [Создать тикет](https://github.com/cnvuls/dozorniy/issues)
-* Codeberg Issues: [Создать тикет](ttps://codeberg.org/cnvls/dozorniy/issues)
+* Codeberg Issues: [Создать тикет](https://codeberg.org/cnvls/dozorniy/issues)
 
 
