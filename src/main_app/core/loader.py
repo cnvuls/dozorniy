@@ -4,7 +4,7 @@ import os
 import pkgutil
 
 
-def autodiscover_features(base_package: str = "main_app.features"):
+def autodiscover_features(base_package: str = "features"):
     """
     Ищет и импортирует модули в папке features.
 
@@ -19,7 +19,6 @@ def autodiscover_features(base_package: str = "main_app.features"):
         return
 
     for _, name, is_pkg in pkgutil.iter_modules([features_path]):
-        print(is_pkg)
         if is_pkg:
             module_name = f"{base_package}.{name}.handler"
             try:

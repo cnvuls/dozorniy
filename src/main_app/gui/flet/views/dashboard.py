@@ -8,11 +8,6 @@ class DashboardPage(ft.Container):
         self.content = ft.Column(
             expand=True,
             controls=[
-                ft.Row([
-                    ft.OutlinedButton("Запустить", expand=True),
-                    ft.OutlinedButton("Остановить", expand=True),
-                ]),
-                ft.Divider(),
                 user_list,
             ]
         )

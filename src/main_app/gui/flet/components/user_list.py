@@ -10,5 +10,5 @@ class ListUsers(ft.ListView):
             padding=10
         )
   
-        for i in range(20):
+        for i in range(100):
             self.controls.append(UserItem(i, f"Dozorniy_Agent_{i}"))

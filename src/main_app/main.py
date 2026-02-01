@@ -5,18 +5,16 @@ from dataclasses import dataclass
 
 from gui.gui_factory import GuiFactory
 
-# Импорты ядра
 from connection.web_socket import WebSocketConnection
 from core.dispatcher import ResponseDispatcher
 from core.events import (EventBus, IncomingRawMessage,
                                   OutputConnection, SendingCommand,
                                   UpdateUserEvent)
-# Импорт загрузчика (Auto-discovery)
 from core.loader import autodiscover_features
 from core.registry import FeatureRegistry
 from core.responses.responsebus import ResponseBus
-# Импорт Request-модели для создания команд
 from features.shell.request import ShellRequest
+from gui.abstracts.base import ServerConnection
 
 
 @dataclass
@@ -27,6 +25,7 @@ class ServerConfig:
 
 # Константы для путей
 FEATURES_PATH = os.path.join(os.path.dirname(__file__), "features")
+print(FEATURES_PATH)
 FEATURES_PACKAGE = "features"
 
 
@@ -39,6 +38,7 @@ class ServerApp:
         self.dispatcher = ResponseDispatcher(self.resp_bus, self.bus)
         self.gui = GuiFactory.create_object(bus=self.bus)
         self.server = WebSocketConnection(self.bus)
+        self._server_task: asyncio.Task | None = None
         self._load_and_setup_features()
 
         self._setup_server_subscriptions()
@@ -59,12 +59,31 @@ class ServerApp:
 
             self.resp_bus.register(meta.response_model, handler_instance)
 
+    async def _handle_server_toggle(self, event: ServerConnection):
+        if event.data:
+            if self._server_task is None or self._server_task.done():
+                print("🚀 [SYSTEM]: Запуск сервера...")
+                self._server_task = asyncio.create_task(self.server.main())
+            else:
+                print("⚠️ [SYSTEM]: Сервер уже запущен")
+        else:
+            if self._server_task and not self._server_task.done():
+                print("🛑 [SYSTEM]: Остановка сервера...")
+                self._server_task.cancel()
+                try:
+                    await self._server_task
+                except asyncio.CancelledError:
+                    print("✅ [SYSTEM]: Сервер успешно остановлен")
+                finally:
+                    self._server_task = None
+
     def _setup_server_subscriptions(self):
         """Подписки самого сервера (логирование, подключение юзеров)"""
         self.bus.subscribe(OutputConnection, self._console_logger)
         self.bus.subscribe(UpdateUserEvent, self._user_logger)
         self.bus.subscribe(UpdateUserEvent, self._on_user_connect)
         self.bus.subscribe(IncomingRawMessage, self._console_logger)
+        self.bus.subscribe(ServerConnection, self._handle_server_toggle)
 
     async def _console_logger(self, event: OutputConnection):
         print(f"🖥️  [SERVER LOG]: {event.text}")
@@ -90,19 +109,14 @@ class ServerApp:
 
             command_event = SendingCommand(user_id=event.user_id, text=json_payload)
 
-            # 4. Публикуем
             await self.bus.publish(command_event)
 
     async def run(self):
         print("--- 🛡️ ПОДГОТОВКА ЗАПУСКА DOZORNIY ---")
         
-        # Запускаем сервер и GUI одновременно. 
-        # Программа будет ждать выполнения ОБОИХ процессов.
+
         try:
-            await asyncio.gather(
-                self.server.main(),    # Твой WebSocket сервер
-                self.gui.main_loop()   # Твой Flet GUI
-            )
+            await self.gui.main_loop()
         except Exception as e:
             print(f"❌ Ошибка при работе приложения: {e}")
 

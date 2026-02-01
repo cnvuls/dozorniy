@@ -4,6 +4,7 @@ from gui.abstracts import UiAbstract
 from gui.flet.components.user_list import ListUsers
 from gui.flet.views.dashboard import DashboardPage
 from gui.flet.views.settings import SettingsPage
+from gui.abstracts.base import ServerConnection
 
 class DozorniyApp(UiAbstract):
     def __init__(self,bus: EventBus):
@@ -27,12 +28,21 @@ class DozorniyApp(UiAbstract):
         for index, page_container in self.pages.items():
             page_container.visible = (index == selected_index) 
         self.page.update()
+    
+    async def _toggle_switch(self,e):
+        await self.bus.publish(ServerConnection(e.data))
 
     async def main(self, page: ft.Page):
         self.page = page
         self.page.title = "Dozorniy RMM"
         self.page.theme = ft.Theme(color_scheme_seed="red")
         self.page.padding = 0
+        self.server_switch = ft.Switch(
+            value=False,
+            active_color=ft.Colors.PRIMARY,
+            on_change=self._toggle_switch,
+        )
+
         self.sidebar = ft.NavigationRail(
             selected_index=0,
             label_type=ft.NavigationRailLabelType.ALL,
@@ -43,6 +53,7 @@ class DozorniyApp(UiAbstract):
                 ft.NavigationRailDestination(icon=ft.Icons.SETTINGS, label="Опции"),
             ],
             on_change=self.navigate,
+            trailing=self.server_switch
         )
 
         self.main_stack = ft.Stack(

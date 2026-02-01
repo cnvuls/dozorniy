@@ -1,4 +1,10 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
+
+
+@dataclass
+class ServerConnection:
+    data: bool
 
 
 class UiAbstract(ABC):
