@@ -1,13 +1,16 @@
+import os
+
 import flet as ft
 from core.events import EventBus
 from gui.abstracts import UiAbstract
+from gui.abstracts.base import ServerConnection
 from gui.flet.components.user_list import ListUsers
 from gui.flet.views.dashboard import DashboardPage
 from gui.flet.views.settings import SettingsPage
-from gui.abstracts.base import ServerConnection
+
 
 class DozorniyApp(UiAbstract):
-    def __init__(self,bus: EventBus):
+    def __init__(self, bus: EventBus):
         self.page: ft.Page | None = None
         self.bus: EventBus = bus
         self.user_list_view = ListUsers()
@@ -17,7 +20,9 @@ class DozorniyApp(UiAbstract):
 
         self.pages: dict[int, ft.Container] = {
             0: ft.Container(content=self.dashboard, visible=True, expand=True),
-            1: ft.Container(content=ft.Text("Плагины в разработке"), visible=False, expand=True),
+            1: ft.Container(
+                content=ft.Text("Плагины в разработке"), visible=False, expand=True
+            ),
             2: ft.Container(content=self.settings, visible=False, expand=True),
         }
 
@@ -26,10 +31,10 @@ class DozorniyApp(UiAbstract):
         if self.page is None:
             return
         for index, page_container in self.pages.items():
-            page_container.visible = (index == selected_index) 
+            page_container.visible = index == selected_index
         self.page.update()
-    
-    async def _toggle_switch(self,e):
+
+    async def _toggle_switch(self, e):
         await self.bus.publish(ServerConnection(e.data))
 
     async def main(self, page: ft.Page):
@@ -53,13 +58,10 @@ class DozorniyApp(UiAbstract):
                 ft.NavigationRailDestination(icon=ft.Icons.SETTINGS, label="Опции"),
             ],
             on_change=self.navigate,
-            trailing=self.server_switch
+            trailing=self.server_switch,
         )
 
-        self.main_stack = ft.Stack(
-            controls=list(self.pages.values()),
-            expand=True
-        )
+        self.main_stack = ft.Stack(controls=list(self.pages.values()), expand=True)
 
         layout = ft.Row(
             controls=[
@@ -68,11 +70,10 @@ class DozorniyApp(UiAbstract):
                 self.main_stack,
             ],
             expand=True,
-            spacing=0
+            spacing=0,
         )
 
         self.page.add(layout)
 
     async def main_loop(self):
-        await ft.app_async(main=self.main)
-
+        await ft.app_async(main=self.main, assets_dir="gui/flet/assets")

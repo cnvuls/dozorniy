@@ -3,18 +3,21 @@ import os
 import sys
 from dataclasses import dataclass
 
-from gui.gui_factory import GuiFactory
-
 from connection.web_socket import WebSocketConnection
 from core.dispatcher import ResponseDispatcher
-from core.events import (EventBus, IncomingRawMessage,
-                                  OutputConnection, SendingCommand,
-                                  UpdateUserEvent)
+from core.events import (
+    EventBus,
+    IncomingRawMessage,
+    OutputConnection,
+    SendingCommand,
+    UpdateUserEvent,
+)
 from core.loader import autodiscover_features
 from core.registry import FeatureRegistry
 from core.responses.responsebus import ResponseBus
 from features.shell.request import ShellRequest
 from gui.abstracts.base import ServerConnection
+from gui.gui_factory import GuiFactory
 
 
 @dataclass
@@ -23,6 +26,9 @@ class ServerConfig:
     port: int = 8888
 
 
+print(f"DEBUG: Текущая директория (CWD): {os.getcwd()}")
+test_path = "assets/asset.jpg"
+print(f"DEBUG: Файл {test_path} существует? -> {os.path.exists(test_path)}")
 # Константы для путей
 FEATURES_PATH = os.path.join(os.path.dirname(__file__), "features")
 print(FEATURES_PATH)
@@ -113,7 +119,6 @@ class ServerApp:
 
     async def run(self):
         print("--- 🛡️ ПОДГОТОВКА ЗАПУСКА DOZORNIY ---")
-        
 
         try:
             await self.gui.main_loop()

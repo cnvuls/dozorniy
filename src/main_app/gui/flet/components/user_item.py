@@ -1,4 +1,6 @@
 import flet as ft
+
+
 class UserItem(ft.Container):
     def __init__(self, user_id: int, name: str):
         super().__init__(
@@ -8,7 +10,7 @@ class UserItem(ft.Container):
         )
         self.user_id = user_id
         self.telemetry_cache = {"window": "учит пайтон"}
-        
+
         self._init_state_controls(name)
 
         self.content = ft.Column(
@@ -16,13 +18,16 @@ class UserItem(ft.Container):
             controls=[
                 self._build_upper_section(),
                 self._build_lower_section(),
-            ]
+            ],
         )
 
     def _init_state_controls(self, name: str):
         self.image_control = ft.Image(
-            src=f"https://picsum.photos/320/200?random={self.user_id}",
-            width=160, height=90, fit=ft.BoxFit.COVER, border_radius=6
+            src="images/asset.jpg",
+            width=160,
+            height=90,
+            fit=ft.BoxFit.COVER,
+            border_radius=6,
         )
         self.name_text = ft.Text(name, weight=ft.FontWeight.BOLD, size=16)
         self.info_text = ft.Text(size=12, italic=True, color=ft.Colors.OUTLINE)
@@ -33,18 +38,27 @@ class UserItem(ft.Container):
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
             vertical_alignment=ft.CrossAxisAlignment.START,
             controls=[
-                ft.Row([
-                    ft.Container(content=self.image_control, border_radius=6),
-                    ft.Column([
-                        ft.Row([
-                            self.name_text,
-                            self._build_id_badge(),
-                        ], spacing=10),
-                        ft.Text("Онлайн", size=12, color="green")
-                    ], spacing=5)
-                ], spacing=15),
-                ft.IconButton(ft.Icons.MORE_VERT)
-            ]
+                ft.Row(
+                    [
+                        ft.Container(content=self.image_control, border_radius=6),
+                        ft.Column(
+                            [
+                                ft.Row(
+                                    [
+                                        self.name_text,
+                                        self._build_id_badge(),
+                                    ],
+                                    spacing=10,
+                                ),
+                                ft.Text("Онлайн", size=12, color="green"),
+                            ],
+                            spacing=5,
+                        ),
+                    ],
+                    spacing=15,
+                ),
+                ft.IconButton(ft.Icons.MORE_VERT),
+            ],
         )
 
     def _build_id_badge(self):
@@ -52,22 +66,27 @@ class UserItem(ft.Container):
             content=ft.Text(f"#{self.user_id}", size=10),
             padding=2,
             bgcolor=ft.Colors.PRIMARY,
-            border_radius=4
+            border_radius=4,
         )
 
     def _build_lower_section(self):
         return ft.Container(
-            content=ft.Row([
-                ft.Icon(ft.Icons.MONITOR_HEART, size=12, color=ft.Colors.OUTLINE),
-                self.info_text
-            ], spacing=5),
+            content=ft.Row(
+                [
+                    ft.Icon(ft.Icons.MONITOR_HEART, size=12, color=ft.Colors.OUTLINE),
+                    self.info_text,
+                ],
+                spacing=5,
+            ),
             padding=8,
             bgcolor=ft.Colors.BLACK26,
-            border_radius=4
+            border_radius=4,
         )
 
     def refresh_info_text(self):
-        self.info_text.value = f"Активность: {self.telemetry_cache.get('window', 'N/A')}"
+        self.info_text.value = (
+            f"Активность: {self.telemetry_cache.get('window', 'N/A')}"
+        )
         try:
             self.update()
         except Exception:
