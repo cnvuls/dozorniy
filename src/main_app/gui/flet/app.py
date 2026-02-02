@@ -40,7 +40,7 @@ class DozorniyApp(UiAbstract):
     async def main(self, page: ft.Page):
         self.page = page
         self.page.title = "Dozorniy RMM"
-        self.page.theme = ft.Theme(color_scheme_seed="red")
+        self.page.theme = ft.Theme(color_scheme_seed="green")
         self.page.padding = 0
         self.server_switch = ft.Switch(
             value=False,

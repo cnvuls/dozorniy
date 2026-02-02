@@ -10,7 +10,8 @@ class UserItem(ft.Container):
         )
         self.user_id = user_id
         self.telemetry_cache = {"window": "учит пайтон"}
-
+        self.ink = True
+        self.on_click = lambda x: x
         self._init_state_controls(name)
 
         self.content = ft.Column(
