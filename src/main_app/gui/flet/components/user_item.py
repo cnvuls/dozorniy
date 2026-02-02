@@ -70,7 +70,7 @@ class UserItem(ft.Container):
 
     def _build_id_badge(self):
         return ft.Container(
-            content=ft.Text(f"#{self.user_id}", size=10),
+            content=ft.Text(f"#{self.user_id}", size=10, color=ft.Colors.ON_PRIMARY),
             padding=2,
             bgcolor=ft.Colors.PRIMARY,
             border_radius=4,
