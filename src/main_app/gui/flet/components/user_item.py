@@ -1,5 +1,7 @@
 import flet as ft
 
+from gui.flet.views.featuremenu import CommandDialog 
+
 
 class UserItem(ft.Container):
     def __init__(self, user_id: int, name: str):
@@ -58,9 +60,13 @@ class UserItem(ft.Container):
                     ],
                     spacing=15,
                 ),
-                ft.IconButton(ft.Icons.MORE_VERT),
+                ft.IconButton(ft.Icons.MORE_VERT, on_click=self.click_menu),
             ],
         )
+    
+    def click_menu(self,e):
+        dialog = CommandDialog(self.user_id)
+        self.page.show_dialog(dialog)
 
     def _build_id_badge(self):
         return ft.Container(
@@ -83,6 +89,7 @@ class UserItem(ft.Container):
             bgcolor=ft.Colors.BLACK26,
             border_radius=4,
         )
+    
 
     def refresh_info_text(self):
         self.info_text.value = (
