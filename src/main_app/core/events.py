@@ -79,6 +79,7 @@ class EventBus:
 
             for cls in event_type.__mro__:
                 if cls in self._subscribers:
+                    print(self._subscribers[cls])
                     handlers.extend(self._subscribers[cls])
 
             self._cache[event_type] = handlers

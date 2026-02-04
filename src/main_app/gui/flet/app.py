@@ -7,6 +7,7 @@ from gui.abstracts.base import ServerConnection
 from gui.flet.components.user_list import ListUsers
 from gui.flet.views.dashboard import DashboardPage
 from gui.flet.views.settings import SettingsPage
+from gui.flet.components.output_log import OutputLog
 
 
 class DozorniyApp(UiAbstract):
@@ -14,8 +15,9 @@ class DozorniyApp(UiAbstract):
         self.page: ft.Page | None = None
         self.bus: EventBus = bus
         self.user_list_view = ListUsers()
+        self.log_window = OutputLog(bus=self.bus)
 
-        self.dashboard = DashboardPage(user_list=self.user_list_view)
+        self.dashboard = DashboardPage(user_list=self.user_list_view, output_log=self.log_window)
         self.settings = SettingsPage()
 
         self.pages: dict[int, ft.Container] = {
