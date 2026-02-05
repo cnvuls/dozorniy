@@ -32,10 +32,10 @@ class WebsocketConnection(ConnectionBase):
         if self.socket is None:
             self.logger.warning("Попытка отправить сообщение при отсутствующем сокете.")
             return
-        print("lol")
         await self.socket.send(event.text)
 
     async def receive_message(self, data: str) -> None:
+        print("_______________________________")
         await self.bus.publish(ReceiveMessage(text=data))
 
     async def main_loop(self) -> None:

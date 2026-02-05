@@ -22,6 +22,7 @@ class WebSocketConnection(ConnectionBase):
 
     async def send_message(self, event: SendingCommand) -> None:
         if event.user_id in self._clients:
+            print("lol")
             await self._clients[event.user_id].send(event.text)
 
     async def register_client(self, socket: websockets.ServerConnection) -> int:
@@ -65,8 +66,6 @@ class WebSocketConnection(ConnectionBase):
             await self.unregister_client(client_id)
 
     async def main_loop(self):
-        # === ИСПРАВЛЕНИЕ ЗАВИСАНИЯ ===
-        # Мы убрали getIpAddress() и просто пишем 127.0.0.1
         host = "0.0.0.0"
         port = self._config.port
 
@@ -76,7 +75,7 @@ class WebSocketConnection(ConnectionBase):
 
         async with serve(self.handler_client, host, port, ping_timeout=10) as server:
             self._server_instance = server
-            await asyncio.Future()  # Работаем вечно
+            await asyncio.Future() 
 
     async def main(self):
         await self.main_loop()

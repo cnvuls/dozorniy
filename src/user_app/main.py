@@ -33,7 +33,6 @@ class ClientApp:
             reconnect_delay=config.reconnect_delay,
         )
 
-        self._init_layers()
 
     def _init_layers(self):
         self.req_dispatcher = RequestDispatcher(self.bus)
@@ -47,7 +46,6 @@ class ClientApp:
 
         if not features:
             print("[ClientApp] ⚠️ No features found!")
-
         for meta in features:
             try:
                 handler_instance = meta.handler_cls(bus=self.bus)
@@ -64,6 +62,7 @@ class ClientApp:
         )
 
     async def run(self) -> None:
+        self._init_layers()
         print(
             f"[ClientApp] 🚀 Starting agent '{self.config.name}' on {self.config.host}:{self.config.port}"
         )

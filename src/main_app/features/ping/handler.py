@@ -1,3 +1,4 @@
+from sys import version
 import time
 
 # INFO: Импорты изменены согласно новой логике именования
@@ -11,7 +12,7 @@ from features.ping.request import \
     PingRequest  # Исходящий (от сервера)
 
 
-@FeatureRegistry.register(command_key="ping", response_model=PingResponse)
+@FeatureRegistry.register(command_key="ping", response_model=PingResponse, name="пинг", version="0.0.1")
 class PingHandler(ResponseHandler):
     def __init__(self, event_bus: EventBus) -> None:
         self.event_bus = event_bus

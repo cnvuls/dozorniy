@@ -22,8 +22,8 @@ from gui.gui_factory import GuiFactory
 
 @dataclass
 class ServerConfig:
-    host: str = "0.0.0.0"
-    port: int = 8888
+   host: str = "0.0.0.0"
+   port: int = 8888
 
 
 print(f"DEBUG: Текущая директория (CWD): {os.getcwd()}")
@@ -49,6 +49,7 @@ class ServerApp:
 
         self._setup_server_subscriptions()
 
+    
     def _load_and_setup_features(self):
         autodiscover_features()
         features_meta = FeatureRegistry.get_features()
@@ -58,12 +59,10 @@ class ServerApp:
 
         for meta in features_meta:
             print(f"🔗 Linking: {meta.command_key} -> {meta.handler_cls.__name__}")
-
             self.dispatcher.bind(meta.command_key, meta.response_model)
-
             handler_instance = meta.handler_cls(self.bus)
-
             self.resp_bus.register(meta.response_model, handler_instance)
+
 
     async def _handle_server_toggle(self, event: ServerConnection):
         if event.data:
@@ -88,7 +87,6 @@ class ServerApp:
         self.bus.subscribe(OutputConnection, self._console_logger)
         self.bus.subscribe(UpdateUserEvent, self._user_logger)
         self.bus.subscribe(UpdateUserEvent, self._on_user_connect)
-        self.bus.subscribe(IncomingRawMessage, self._console_logger)
         self.bus.subscribe(ServerConnection, self._handle_server_toggle)
 
     async def _console_logger(self, event: OutputConnection):
@@ -105,21 +103,19 @@ class ServerApp:
         """
         if event.action == "connect":
             print(f">>> ⚡ Формирую команду 'ls -la' для клиента {event.user_id}...")
-
+            print("lol")
             request_model = ShellRequest(
                 command="ls -la",
                 user_id=event.user_id,
             )
 
             json_payload = request_model.model_dump_json()
-
             command_event = SendingCommand(user_id=event.user_id, text=json_payload)
 
             await self.bus.publish(command_event)
 
     async def run(self):
         print("--- 🛡️ ПОДГОТОВКА ЗАПУСКА DOZORNIY ---")
-
         try:
             await self.gui.main_loop()
         except Exception as e:

@@ -11,8 +11,9 @@ dependencies = [
 ]
 [tool.basedpyright]
 typeCheckingMode = "standard"
+venvPath = "."
 venv = ".venv"
-venvPath = "/home/cnvls/python/dozorniy/src"
+
 reportAny = false
 reportExplicitAny = false
 reportUnknownVariableType = false

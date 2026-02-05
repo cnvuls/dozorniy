@@ -13,7 +13,6 @@ def autodiscover_features(base_package: str = "features"):
     current_dir = os.path.dirname(os.path.abspath(__file__))
     user_app_root = os.path.dirname(current_dir)
     features_path = os.path.join(user_app_root, "features")
-
     if not os.path.exists(features_path):
         print(f"⚠️  Feature folder not found at: {features_path}")
         return
