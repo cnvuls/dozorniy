@@ -16,7 +16,7 @@ class SettingsPage(ft.Container):
 
         self.content = ft.Column(controls=settings_controls)
 
-    async def save_config(self, e):
+    async def save_config(self):
         print(f"Saving config: Port {self.port_input.value}")
 
 

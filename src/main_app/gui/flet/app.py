@@ -1,5 +1,4 @@
-import os
-
+from enum import IntEnum
 import flet as ft
 from core.events import EventBus
 from gui.abstracts import UiAbstract
@@ -8,7 +7,12 @@ from gui.flet.components.user_list import ListUsers
 from gui.flet.views.dashboard import DashboardPage
 from gui.flet.views.settings import SettingsPage
 from gui.flet.components.output_log import OutputLog
+from gui.flet.views.logs import LogsPage
 
+class Routes(IntEnum):
+    DASHBOARD = 0
+    LOGS = 1
+    SETTINGS = 2
 
 class DozorniyApp(UiAbstract):
     def __init__(self, bus: EventBus):
@@ -19,13 +23,14 @@ class DozorniyApp(UiAbstract):
 
         self.dashboard = DashboardPage(user_list=self.user_list_view, output_log=self.log_window)
         self.settings = SettingsPage()
+        self.logs = LogsPage()
 
         self.pages: dict[int, ft.Container] = {
-            0: ft.Container(content=self.dashboard, visible=True, expand=True),
-            1: ft.Container(
-                content=ft.Text("Плагины в разработке"), visible=False, expand=True
+            Routes.DASHBOARD: ft.Container(content=self.dashboard, visible=True, expand=True),
+            Routes.LOGS: ft.Container(
+                content=ft.Container(content=self.logs), visible=False, expand=True
             ),
-            2: ft.Container(content=self.settings, visible=False, expand=True),
+            Routes.SETTINGS: ft.Container(content=self.settings, visible=False, expand=True),
         }
 
     async def navigate(self, e):
@@ -42,7 +47,7 @@ class DozorniyApp(UiAbstract):
     async def main(self, page: ft.Page):
         self.page = page
         self.page.title = "Dozorniy RMM"
-        self.page.theme = ft.Theme(color_scheme_seed="green")
+        self.page.theme = ft.Theme(color_scheme_seed="red")
         self.page.padding = 0
         self.server_switch = ft.Switch(
             value=False,
@@ -56,7 +61,7 @@ class DozorniyApp(UiAbstract):
             min_width=100,
             destinations=[
                 ft.NavigationRailDestination(icon=ft.Icons.DASHBOARD, label="Монитор"),
-                ft.NavigationRailDestination(icon=ft.Icons.EXTENSION, label="Плагины"),
+                ft.NavigationRailDestination(icon=ft.Icons.MONITOR_HEART, label="Логи"),
                 ft.NavigationRailDestination(icon=ft.Icons.SETTINGS, label="Опции"),
             ],
             on_change=self.navigate,

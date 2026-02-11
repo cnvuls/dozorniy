@@ -10,7 +10,7 @@ class OutputLog(ft.Container):
         self.border = ft.border.all(1, ft.Colors.PRIMARY)
         self.border_radius = 5
         self.padding = 5
-
+        
         self.list_view = ft.ListView(
             expand=True,
             spacing=2,
@@ -27,8 +27,15 @@ class OutputLog(ft.Container):
             f"> {event.text}", 
             color=ft.Colors.PRIMARY,
             selectable=True,
-            font_family="Consolas"
+            font_family="Consolas",
+            align=ft.Alignment.CENTER
         )
         
         self.list_view.controls.append(line)
+
+        MAX_LOG_LINES = 20 #TODO: сделать нормально настройку в config 
+        if len(self.list_view.controls) > MAX_LOG_LINES:
+            self.list_view.controls.pop(0)
+
+
         self.update() 
