@@ -1,3 +1,4 @@
+from collections import deque
 import flet as ft
 from core.events import EventBus, OutputConnection 
 
@@ -18,6 +19,8 @@ class OutputLog(ft.Container):
         )
         
         self.content = self.list_view 
+        
+        
 
     def did_mount(self):
         self.bus.subscribe(OutputConnection, self.handle_output_event)

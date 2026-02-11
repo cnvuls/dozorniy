@@ -8,6 +8,7 @@ from gui.flet.views.dashboard import DashboardPage
 from gui.flet.views.settings import SettingsPage
 from gui.flet.components.output_log import OutputLog
 from gui.flet.views.logs import LogsPage
+from gui.flet.components.logs_list import ListLog
 
 class Routes(IntEnum):
     DASHBOARD = 0
@@ -20,16 +21,14 @@ class DozorniyApp(UiAbstract):
         self.bus: EventBus = bus
         self.user_list_view = ListUsers()
         self.log_window = OutputLog(bus=self.bus)
-
+        self.list_log = ListLog(bus=self.bus)
         self.dashboard = DashboardPage(user_list=self.user_list_view, output_log=self.log_window)
         self.settings = SettingsPage()
-        self.logs = LogsPage()
+        self.logs = LogsPage(self.list_log)
 
         self.pages: dict[int, ft.Container] = {
             Routes.DASHBOARD: ft.Container(content=self.dashboard, visible=True, expand=True),
-            Routes.LOGS: ft.Container(
-                content=ft.Container(content=self.logs), visible=False, expand=True
-            ),
+            Routes.LOGS: ft.Container(content=ft.Container(content=self.logs), visible=False, expand=True),
             Routes.SETTINGS: ft.Container(content=self.settings, visible=False, expand=True),
         }
 
