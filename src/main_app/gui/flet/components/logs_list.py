@@ -36,7 +36,7 @@ class ListLog(ft.Container):
         
         item = ft.ListTile(
             title=ft.Text(event.text),
-            trailing=ft.Icons.INFO
+            trailing=ft.Icons.INFO,
         )
         
         self.list_view.controls.append(item)

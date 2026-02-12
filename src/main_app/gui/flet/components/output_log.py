@@ -24,6 +24,9 @@ class OutputLog(ft.Container):
 
     def did_mount(self):
         self.bus.subscribe(OutputConnection, self.handle_output_event)
+    
+    def will_unmount(self):
+        self.bus.unsubscribe(OutputConnection, self.handle_output_event)
 
     async def handle_output_event(self, event: OutputConnection):
         line = ft.Text(
@@ -31,7 +34,7 @@ class OutputLog(ft.Container):
             color=ft.Colors.PRIMARY,
             selectable=True,
             font_family="Consolas",
-            align=ft.Alignment.CENTER
+            text_align=ft.TextAlign.CENTER
         )
         
         self.list_view.controls.append(line)

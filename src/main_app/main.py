@@ -67,18 +67,18 @@ class ServerApp:
     async def _handle_server_toggle(self, event: ServerConnection):
         if event.data:
             if self._server_task is None or self._server_task.done():
-                print("🚀 [SYSTEM]: Запуск сервера...")
+                await self.bus.publish(OutputConnection("🚀 [SYSTEM]: Запуск сервера..."))
                 self._server_task = asyncio.create_task(self.server.main())
             else:
-                print("⚠️ [SYSTEM]: Сервер уже запущен")
+                await self.bus.publish(OutputConnection("⚠️ [SYSTEM]: Сервер уже запущен"))
         else:
             if self._server_task and not self._server_task.done():
-                print("🛑 [SYSTEM]: Остановка сервера...")
+                await self.bus.publish(OutputConnection("🛑 [SYSTEM]: Остановка сервера..."))
                 self._server_task.cancel()
                 try:
                     await self._server_task
                 except asyncio.CancelledError:
-                    print("✅ [SYSTEM]: Сервер успешно остановлен")
+                    await self.bus.publish(OutputConnection("✅ [SYSTEM]: Сервер успешно остановлен"))
                 finally:
                     self._server_task = None
 
