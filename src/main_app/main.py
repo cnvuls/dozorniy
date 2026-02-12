@@ -16,8 +16,8 @@ from core.loader import autodiscover_features
 from core.registry import FeatureRegistry
 from core.responses.responsebus import ResponseBus
 from features.shell.request import ShellRequest
-from gui.abstracts.base import ServerConnection
-from gui.gui_factory import GuiFactory
+from ui.abstracts.base import ServerConnection
+from ui.gui_factory import GuiFactory
 
 
 @dataclass

@@ -1,7 +1,7 @@
 from core.abstracts import AbstractFactory
 from core.events import EventBus
-from gui.abstracts import UiAbstract
-from gui.flet.app import DozorniyApp
+from ui.abstracts import UiAbstract
+from ui.gui.app import DozorniyApp
 
 
 class GuiFactory(AbstractFactory):

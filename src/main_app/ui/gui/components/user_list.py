@@ -1,7 +1,7 @@
 import asyncio
 
 import flet as ft
-from gui.flet.components.user_item import UserItem
+from ui.gui.components.user_item import UserItem
 
 
 class ListUsers(ft.ListView):

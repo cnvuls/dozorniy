@@ -1,14 +1,14 @@
 from enum import IntEnum
 import flet as ft
 from core.events import EventBus
-from gui.abstracts import UiAbstract
-from gui.abstracts.base import ServerConnection
-from gui.flet.components.user_list import ListUsers
-from gui.flet.views.dashboard import DashboardPage
-from gui.flet.views.settings import SettingsPage
-from gui.flet.components.output_log import OutputLog
-from gui.flet.views.logs import LogsPage
-from gui.flet.components.logs_list import ListLog
+from ui.abstracts import UiAbstract
+from ui.abstracts.base import ServerConnection
+from ui.gui.components.user_list import ListUsers
+from ui.gui.pages.dashboard import DashboardPage
+from ui.gui.pages.settings import SettingsPage
+from ui.gui.components.output_log import OutputLog
+from ui.gui.pages.logs import LogsPage
+from ui.gui.components.logs_list import ListLog
 
 class Routes(IntEnum):
     DASHBOARD = 0

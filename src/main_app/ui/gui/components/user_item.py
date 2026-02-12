@@ -1,6 +1,6 @@
 import flet as ft
 
-from gui.flet.views.featuremenu import CommandDialog 
+from ui.gui.pages.featuremenu import CommandDialog 
 
 
 class UserItem(ft.Container):
@@ -55,7 +55,7 @@ class UserItem(ft.Container):
                                 ),
                                 ft.Text("Онлайн", size=12, color="green"),
                             ],
-                            spacing=5,
+                                spacing=5,
                         ),
                     ],
                     spacing=15,
