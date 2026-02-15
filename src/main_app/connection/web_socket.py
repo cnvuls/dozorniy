@@ -5,10 +5,9 @@ import websockets
 # from utils.get_ipadress import getIpAddress # <--- Убрали, чтобы не висло
 from websockets import serve
 
-from config.loader import load_config
 from connection.abstracts import ConnectionBase
-from core.events import (EventBus, IncomingRawMessage,
-                                  OutputConnection, SendingCommand,
+from core.events import (EventBus, IncomingRawMessage, InfoLogEvent,
+                                  SendingCommand,
                                   UpdateUserEvent)
 
 
@@ -16,13 +15,12 @@ class WebSocketConnection(ConnectionBase):
     def __init__(self, bus: EventBus) -> None:
         self._clients: Dict[int, websockets.ServerConnection] = {}
         self.bus = bus
-        self._config = load_config()
+
 
         self.bus.subscribe(SendingCommand, self.send_message)
 
     async def send_message(self, event: SendingCommand) -> None:
         if event.user_id in self._clients:
-            print("lol")
             await self._clients[event.user_id].send(event.text)
 
     async def register_client(self, socket: websockets.ServerConnection) -> int:
@@ -67,10 +65,10 @@ class WebSocketConnection(ConnectionBase):
 
     async def main_loop(self):
         host = "0.0.0.0"
-        port = self._config.port
+        port = "8888"
 
         await self.bus.publish(
-            OutputConnection(f"Server is activated on ws://127.0.0.1:{port}")
+            InfoLogEvent(f"Server is activated on ws://127.0.0.1:{port}", source="websocket")
         )
 
         async with serve(self.handler_client, host, port, ping_timeout=10) as server:

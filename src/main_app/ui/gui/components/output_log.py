@@ -1,6 +1,6 @@
 from collections import deque
 import flet as ft
-from core.events import EventBus, OutputConnection 
+from core.events import EventBus, ConsoleLogEvent
 
 class OutputLog(ft.Container): 
     def __init__(self, bus: EventBus):
@@ -23,12 +23,12 @@ class OutputLog(ft.Container):
         
 
     def did_mount(self):
-        self.bus.subscribe(OutputConnection, self.handle_output_event)
+        self.bus.subscribe(ConsoleLogEvent, self.handle_output_event)
     
     def will_unmount(self):
-        self.bus.unsubscribe(OutputConnection, self.handle_output_event)
+        self.bus.unsubscribe(ConsoleLogEvent, self.handle_output_event)
 
-    async def handle_output_event(self, event: OutputConnection):
+    async def handle_output_event(self, event: ConsoleLogEvent):
         line = ft.Text(
             f"> {event.text}", 
             color=ft.Colors.PRIMARY,

@@ -36,9 +36,7 @@ class FeatureRegistry:
         Связывает: строку JSON -> Pydantic модель -> Класс Хендлера
         """
 
-        def decorator(handler_cls):
-            print(f"📦 Registering: {command_key}") 
-            
+        def decorator(handler_cls): 
             meta = FeatureMeta(
                 command_key=command_key,
                 response_model=response_model,

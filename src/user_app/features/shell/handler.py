@@ -29,5 +29,4 @@ class ShellHandler(ResponseHandler[ShellResponse]):
             stderr=error,
             exit_code=process.returncode or 0,
         )
-        print(response)
         await self.bus.publish(response)

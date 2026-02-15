@@ -1,9 +1,11 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+from core.events import AbstractEvent
+
 
 @dataclass
-class ServerConnection:
+class ServerConnection(AbstractEvent):
     data: bool
 
 

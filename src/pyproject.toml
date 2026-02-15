@@ -9,10 +9,12 @@ dependencies = [
     "pydantic>=2.12.5",
     "websockets>=15.0.1",
 ]
+
 [tool.basedpyright]
 typeCheckingMode = "standard"
 venvPath = "."
 venv = ".venv"
+extraPaths = ["main_app", "user_app"]
 
 reportAny = false
 reportExplicitAny = false
@@ -20,8 +22,6 @@ reportUnknownVariableType = false
 reportUnknownMemberType = false
 reportUnknownArgumentType = false
 reportUnknownParameterType = false
-
 reportDeprecated = false
-
 reportImplicitRelativeImport = "none"
 reportMissingTypeArgument = false

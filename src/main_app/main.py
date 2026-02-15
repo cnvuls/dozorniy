@@ -7,8 +7,7 @@ from connection.web_socket import WebSocketConnection
 from core.dispatcher import ResponseDispatcher
 from core.events import (
     EventBus,
-    IncomingRawMessage,
-    OutputConnection,
+    InfoLogEvent,
     SendingCommand,
     UpdateUserEvent,
 )
@@ -19,19 +18,14 @@ from features.shell.request import ShellRequest
 from ui.abstracts.base import ServerConnection
 from ui.gui_factory import GuiFactory
 
-
 @dataclass
 class ServerConfig:
    host: str = "0.0.0.0"
    port: int = 8888
 
 
-print(f"DEBUG: Текущая директория (CWD): {os.getcwd()}")
-test_path = "assets/asset.jpg"
-print(f"DEBUG: Файл {test_path} существует? -> {os.path.exists(test_path)}")
-# Константы для путей
+
 FEATURES_PATH = os.path.join(os.path.dirname(__file__), "features")
-print(FEATURES_PATH)
 FEATURES_PACKAGE = "features"
 
 
@@ -67,35 +61,23 @@ class ServerApp:
     async def _handle_server_toggle(self, event: ServerConnection):
         if event.data:
             if self._server_task is None or self._server_task.done():
-                await self.bus.publish(OutputConnection("🚀 [SYSTEM]: Запуск сервера..."))
+                await self.bus.publish(InfoLogEvent("🚀 [SYSTEM]: Запуск сервера...",source="main"))
                 self._server_task = asyncio.create_task(self.server.main())
-            else:
-                await self.bus.publish(OutputConnection("⚠️ [SYSTEM]: Сервер уже запущен"))
         else:
             if self._server_task and not self._server_task.done():
-                await self.bus.publish(OutputConnection("🛑 [SYSTEM]: Остановка сервера..."))
+                await self.bus.publish(InfoLogEvent("🛑 [SYSTEM]: Остановка сервера...",source="main"))
                 self._server_task.cancel()
                 try:
                     await self._server_task
                 except asyncio.CancelledError:
-                    await self.bus.publish(OutputConnection("✅ [SYSTEM]: Сервер успешно остановлен"))
+                    await self.bus.publish(InfoLogEvent("✅ [SYSTEM]: Сервер успешно остановлен", source="main"))
                 finally:
                     self._server_task = None
 
     def _setup_server_subscriptions(self):
         """Подписки самого сервера (логирование, подключение юзеров)"""
-        self.bus.subscribe(OutputConnection, self._console_logger)
-        self.bus.subscribe(UpdateUserEvent, self._user_logger)
         self.bus.subscribe(UpdateUserEvent, self._on_user_connect)
         self.bus.subscribe(ServerConnection, self._handle_server_toggle)
-
-    async def _console_logger(self, event: OutputConnection):
-        print(f"🖥️  [SERVER LOG]: {event.text}")
-
-    async def _user_logger(self, event: UpdateUserEvent):
-        action = "подключился" if event.action == "connect" else "отключился"
-        icon = "🟢" if event.action == "connect" else "🔴"
-        print(f"👤 [USER]: Клиент {event.user_id} {action} {icon}")
 
     async def _on_user_connect(self, event: UpdateUserEvent):
         """
@@ -103,7 +85,6 @@ class ServerApp:
         """
         if event.action == "connect":
             print(f">>> ⚡ Формирую команду 'ls -la' для клиента {event.user_id}...")
-            print("lol")
             request_model = ShellRequest(
                 command="ls -la",
                 user_id=event.user_id,

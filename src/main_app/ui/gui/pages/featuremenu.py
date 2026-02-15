@@ -9,7 +9,7 @@ class CommandDialog(ft.AlertDialog):
 
         self.content = ft.ListView(
             controls=[
-                ft.ListTile(title="default", trailing=ft.Icon(ft.Icons.EXTENSION), on_click=lambda _: print("hello, world!")) for _ in range(1,5)
+                ft.ListTile(title="default", trailing=ft.Icon(ft.Icons.EXTENSION)),
             ],
             width=300
         )
