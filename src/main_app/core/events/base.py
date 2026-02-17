@@ -1,15 +1,13 @@
 import asyncio
-from typing import Dict, Type, Callable, List, Any
+from typing import Dict, Type, Callable, List, Any, TypeVar
 from abc import ABC
-from dataclasses import asdict, dataclass
+from pydantic import BaseModel
 
-@dataclass(kw_only=True)
-class AbstractEvent(ABC):
-    def as_dict(self):
-        data = {"name": self.__class__.__name__}
-        data.update(asdict(self))
-        return data
+class AbstractEvent(BaseModel, ABC):
+    pass
 
+
+T = TypeVar("T", bound=BaseModel)
 
 class EventBus:
     def __init__(self):
@@ -18,7 +16,7 @@ class EventBus:
 
         self._cache: Dict[Type, List[Callable]] = {}
 
-    def subscribe(self, event_type: Type[AbstractEvent], callback: Callable) -> None:
+    def subscribe(self, event_type: Type[T], callback: Callable) -> None:
         """Подписаться на событие (или базовый класс событий)."""
         if event_type not in self._subscribers:
             self._subscribers[event_type] = []
@@ -26,7 +24,7 @@ class EventBus:
 
         self._cache.clear()
     
-    def unsubscribe(self, event_Type: Type[AbstractEvent], callback: Callable) -> None:
+    def unsubscribe(self, event_Type: Type[T], callback: Callable) -> None:
         """Отписка от события (также базовых классов)"""
         if event_Type in self._subscribers:
             try:
