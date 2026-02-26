@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 import aiofiles.os
-from core.config.events import  GetConfig
+from core.config.events import  ConfigLoaded, GetConfig, UpdateConfig
 from core.events import EventBus
 import aiofiles 
 
@@ -13,7 +13,6 @@ class ConfigLoader:
         
     async def handle_get_config(self, event: GetConfig):
         model_cls = event.model_class
-        resp_cls = event.response_class
         
         section = model_cls.section_name
         
@@ -21,12 +20,20 @@ class ConfigLoader:
         section_data = raw_data.get(section, {})
         
         model_instance = model_cls.model_validate(section_data)
-        response_event = resp_cls.model_validate({"payload": model_instance})
-        
+        response_event = ConfigLoaded(payload=model_instance)
+
         await self._bus.publish(response_event)
     
-    async def handle_update_config(self, event):
-        pass
+    async def handle_update_config(self, event: UpdateConfig):
+        """
+        Класс в котором отправляются изменения в файлики
+        """
+        current_config = await self._read_json()
+        section = event.payload.section_name
+        current_config[section] = event.payload.model_dump()
+        
+        await self._write_json(current_config) 
+        await self._bus.publish(ConfigLoaded(payload=event.payload))
 
     async def _read_json(self) -> dict:
         try:
