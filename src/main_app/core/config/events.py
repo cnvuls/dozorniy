@@ -3,17 +3,32 @@ from typing import Type, ClassVar
 from pydantic import BaseModel
 from core.config.models import BaseSettings, NetworkSettings
 
-class ConfigLoaded(BaseModel, ABC):
+class ConfigRecieveData(BaseModel, ABC):
     pass
 
-class NetworkConfigLoaded(ConfigLoaded):
+class NetworkConfigRecieveData(ConfigRecieveData):
     payload: NetworkSettings
 
-
 class GetConfig(BaseModel, ABC):
-    response_class: ClassVar[Type[ConfigLoaded]]
+    response_class: ClassVar[Type[ConfigRecieveData]]
     model_class: ClassVar[Type[BaseSettings]]
 
 class NetworkGetConfig(GetConfig):
-    response_class = NetworkConfigLoaded
+    response_class = NetworkConfigRecieveData
     model_class = NetworkSettings
+
+class LoadConfigData(BaseModel,ABC):
+    pass
+
+class NetworkLoadConfigData(LoadConfigData):
+    payload: NetworkSettings
+
+class UpdateConfig(BaseModel, ABC):
+    response_class: ClassVar[Type[LoadConfigData]]
+    model_class: ClassVar[Type[BaseSettings]]
+
+class NetworkUpdateConfig(UpdateConfig):
+    response_class = NetworkLoadConfigData
+    model_class = NetworkSettings
+
+
