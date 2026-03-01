@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from connection.web_socket import WebSocketConnection
 from core.dispatcher import ResponseDispatcher
 from core.events import (
+    ConsoleLogEvent,
     EventBus,
     InfoLogEvent,
     SendingCommand,
@@ -61,16 +62,16 @@ class ServerApp:
     async def _handle_server_toggle(self, event: ServerConnection):
         if event.data:
             if self._server_task is None or self._server_task.done():
-                await self.bus.publish(InfoLogEvent("🚀 [SYSTEM]: Запуск сервера...",source="main"))
+                await self.bus.publish(ConsoleLogEvent(text="🚀 [SYSTEM]: Запуск сервера...",source="main"))
                 self._server_task = asyncio.create_task(self.server.main())
         else:
             if self._server_task and not self._server_task.done():
-                await self.bus.publish(InfoLogEvent("🛑 [SYSTEM]: Остановка сервера...",source="main"))
+                await self.bus.publish(ConsoleLogEvent(text="🛑 [SYSTEM]: Остановка сервера...",source="main"))
                 self._server_task.cancel()
                 try:
                     await self._server_task
                 except asyncio.CancelledError:
-                    await self.bus.publish(InfoLogEvent("✅ [SYSTEM]: Сервер успешно остановлен", source="main"))
+                    await self.bus.publish(ConsoleLogEvent(text="✅ [SYSTEM]: Сервер успешно остановлен", source="main"))
                 finally:
                     self._server_task = None
 
@@ -84,7 +85,6 @@ class ServerApp:
         Логика отправки команды при подключении.
         """
         if event.action == "connect":
-            print(f">>> ⚡ Формирую команду 'ls -la' для клиента {event.user_id}...")
             request_model = ShellRequest(
                 command="ls -la",
                 user_id=event.user_id,

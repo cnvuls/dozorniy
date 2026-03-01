@@ -1,6 +1,6 @@
 from collections import deque
 import flet as ft
-from core.events import EventBus, ConsoleLogEvent
+from core.events import EventBus, ConsoleLogEvent, InfoLogEvent
 
 class OutputLog(ft.Container): 
     def __init__(self, bus: EventBus):
@@ -11,7 +11,7 @@ class OutputLog(ft.Container):
         self.border = ft.border.all(1, ft.Colors.PRIMARY)
         self.border_radius = 5
         self.padding = 5
-        
+        self._mount = False
         self.list_view = ft.ListView(
             expand=True,
             spacing=2,
@@ -23,9 +23,11 @@ class OutputLog(ft.Container):
         
 
     def did_mount(self):
+        self._mount = True
         self.bus.subscribe(ConsoleLogEvent, self.handle_output_event)
     
     def will_unmount(self):
+        self._mount = False
         self.bus.unsubscribe(ConsoleLogEvent, self.handle_output_event)
 
     async def handle_output_event(self, event: ConsoleLogEvent):
@@ -43,5 +45,6 @@ class OutputLog(ft.Container):
         if len(self.list_view.controls) > MAX_LOG_LINES:
             self.list_view.controls.pop(0)
 
+        if self._mount:
+            self.update()
 
-        self.update() 

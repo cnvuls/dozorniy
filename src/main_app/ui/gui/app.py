@@ -49,7 +49,8 @@ class DozorniyApp(UiAbstract):
         self.content_holder.update()
 
     async def _toggle_switch(self, e):
-        await self.bus.publish(ServerConnection(e.data))
+        print(e)
+        await self.bus.publish(ServerConnection(data=e.data))
 
     async def main(self, page: ft.Page):
         self.page = page

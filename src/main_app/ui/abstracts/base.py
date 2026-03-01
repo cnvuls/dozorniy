@@ -4,7 +4,6 @@ from dataclasses import dataclass
 from core.events import AbstractEvent
 
 
-@dataclass
 class ServerConnection(AbstractEvent):
     data: bool
 

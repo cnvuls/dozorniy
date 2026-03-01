@@ -28,7 +28,7 @@ class WebSocketConnection(ConnectionBase):
         user_id = len(self._clients) + 1
         print(user_name)
         self._clients[user_id] = socket
-        await self.bus.publish(UpdateUserEvent("connect", user_id, user_name))
+        await self.bus.publish(UpdateUserEvent(action="connect", user_id=user_id, user_name=user_name))
         print(user_name)
         return user_id
 
@@ -42,7 +42,7 @@ class WebSocketConnection(ConnectionBase):
     async def unregister_client(self, client_id: int) -> None:
         if client_id in self._clients:
             self._clients.pop(client_id)
-            await self.bus.publish(UpdateUserEvent("disconnect", client_id))
+            await self.bus.publish(UpdateUserEvent(action="disconnect", user_id=client_id))
 
     async def stop(self):
         tasks = [
@@ -65,10 +65,10 @@ class WebSocketConnection(ConnectionBase):
 
     async def main_loop(self):
         host = "0.0.0.0"
-        port = "8888"
+        port = 8888
 
         await self.bus.publish(
-            InfoLogEvent(f"Server is activated on ws://127.0.0.1:{port}", source="websocket")
+            InfoLogEvent(text=f"Server is activated on ws://127.0.0.1:{port}", source="websocket")
         )
 
         async with serve(self.handler_client, host, port, ping_timeout=10) as server:

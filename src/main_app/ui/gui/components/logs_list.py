@@ -31,7 +31,7 @@ class ListLog(ft.Container):
         self.border = ft.border.all(1, ft.Colors.PRIMARY)
         self.border_radius = 5
         self.padding = 5
-        
+        self._mount = False
         self.list_view = ft.ListView(
             expand=True,
             spacing=2,
@@ -45,11 +45,13 @@ class ListLog(ft.Container):
         self._log_history = deque(maxlen=self.max_log_lines)
     
     def did_mount(self):
+        self._mount = True
         self.list_view.controls.clear()
         for event in self._log_history:
             self._add_to_ui(event)
 
     def will_unmount(self):
+        self._mount = False
         self.list_view.controls.clear()
  
     def _add_to_ui(self, event: BaseLogEvent):
@@ -68,13 +70,15 @@ class ListLog(ft.Container):
         )        
         
         self.list_view.controls.append(item)
-
+        
 
 
     async def output_log_event(self, event: BaseLogEvent):
         self._log_history.append(event)
-        if self.page:
-            self._add_to_ui(event) 
-            if len(self.list_view.controls) > self.max_log_ui_lines:
-                self.list_view.controls.pop(0)
+        
+        self._add_to_ui(event) 
+        if len(self.list_view.controls) > self.max_log_ui_lines:
+            self.list_view.controls.pop(0)
+        
+        if self._mount:
             self.update()

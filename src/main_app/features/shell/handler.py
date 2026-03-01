@@ -1,6 +1,6 @@
 # Copyright (c) 2026 hackhype. SPDX-License-Identifier: PolyForm-Noncommercial-1.0.0
 
-from core.events import EventBus, InfoLogEvent
+from core.events import ConsoleLogEvent, EventBus, InfoLogEvent
 from core.registry import  FeatureRegistry
 from core.responses.base import ResponseHandler
 from features.shell.response import ShellResponse
@@ -26,4 +26,4 @@ class ShellHandler(ResponseHandler):
         else:
             message = f"error: {response.stderr}, code: {response.exit_code}"
 
-        await self.bus.publish(InfoLogEvent(text=message, source="handler"))
+        await self.bus.publish(ConsoleLogEvent(text=message, source="handler"))
