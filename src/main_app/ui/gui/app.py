@@ -1,5 +1,6 @@
 from enum import IntEnum
 from math import exp
+from tkinter import E
 import flet as ft
 from core.events import EventBus
 from ui.abstracts import UiAbstract
@@ -21,11 +22,11 @@ class DozorniyApp(UiAbstract):
         self.page: ft.Page | None = None
         self.bus: EventBus = bus
 
-        self.user_list_view = ListUsers()
+        self.user_list_view = ListUsers(bus=self.bus)
         self.log_window = OutputLog(bus=self.bus)
         self.list_log = ListLog(bus=self.bus)
 
-        self.dashboard = DashboardPage(user_list=self.user_list_view, output_log=self.log_window)
+        self.dashboard = DashboardPage(user_list=self.user_list_view, output_log=self.log_window,bus=bus)
         self.settings = SettingsPage()
         self.logs = LogsPage(self.list_log)
         

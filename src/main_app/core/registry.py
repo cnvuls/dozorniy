@@ -5,11 +5,6 @@ from typing import Any, List, Optional, Tuple, Type
 
 from pydantic import BaseModel
 
-
-class BaseFeatureArgs(BaseModel):
-    """Все фичи будут наследовать свои аргументы отсюда"""
-    pass
-
 @dataclass
 class FeatureMeta:
     command_key: str 
@@ -18,6 +13,10 @@ class FeatureMeta:
     name: str
     version: str
     args_model: Optional[Type[BaseModel]] = None
+    is_hidden: bool = False
+
+
+
 
 class FeatureRegistry:
     _features: List[FeatureMeta] = []
@@ -29,7 +28,8 @@ class FeatureRegistry:
             response_model: Type[Any],       
             name: str,
             version: str,
-            args_model: Optional[Type[BaseModel]] = None
+            args_model: Optional[Type[BaseModel]] = None,
+            is_hidden: bool = False
         ):
         """
         Декоратор для регистрации хендлеров.
@@ -43,7 +43,8 @@ class FeatureRegistry:
                 handler_cls=handler_cls,
                 name=name,
                 version=version,
-                args_model=args_model
+                args_model=args_model,
+                is_hidden=is_hidden
             )
             
             cls._features.append(meta)

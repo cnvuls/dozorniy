@@ -1,10 +1,11 @@
 import flet as ft
 
+from core.events import EventBus
 from ui.gui.pages.featuremenu import CommandDialog 
 
 
 class UserItem(ft.Container):
-    def __init__(self, user_id: int, name: str):
+    def __init__(self, user_id: int, name: str, bus:EventBus):
         super().__init__(
             padding=10,
             border_radius=8,
@@ -13,6 +14,7 @@ class UserItem(ft.Container):
         self.user_id = user_id
         self.telemetry_cache = {"window": "учит пайтон"}
         self.ink = True
+        self.bus = bus
         self.on_click = lambda x: x
         self._init_state_controls(name)
 
@@ -65,7 +67,7 @@ class UserItem(ft.Container):
         )
     
     def click_menu(self,e):
-        dialog = CommandDialog(self.user_id)
+        dialog = CommandDialog(self.user_id,self.bus)
         self.page.show_dialog(dialog)
 
     def _build_id_badge(self):

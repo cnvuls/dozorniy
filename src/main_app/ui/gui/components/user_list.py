@@ -1,12 +1,13 @@
 import asyncio
 
 import flet as ft
+from core.events import EventBus
 from ui.gui.components.user_item import UserItem
 
 
 class ListUsers(ft.ListView):
-    def __init__(self):
+    def __init__(self, bus:EventBus):
         super().__init__(expand=True, spacing=10, padding=10)
 
         for i in range(10):
-            self.controls.append(UserItem(i, f"Dozorniy_Agent_{i}"))
+            self.controls.append(UserItem(i, f"Dozorniy_Agent_{i}",bus=bus))

@@ -12,6 +12,7 @@ from core.events import (
     SendingCommand,
     UpdateUserEvent,
 )
+from core.services.feature_service import FeatureService
 from core.loader import autodiscover_features
 from core.registry import FeatureRegistry
 from core.responses.responsebus import ResponseBus
@@ -41,7 +42,7 @@ class ServerApp:
         self.server = WebSocketConnection(self.bus)
         self._server_task: asyncio.Task | None = None
         self._load_and_setup_features()
-
+        self.feature_service = FeatureService(self.bus)
         self._setup_server_subscriptions()
 
     

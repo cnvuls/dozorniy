@@ -77,10 +77,8 @@ class RequestDispatcher:
         self._event_bus: EventBus = bus
         self._event_bus.subscribe(RequestBase, self.send)
         self._middlewares: list[ResponseMiddleware] = []
-
     def add_middleware(self, middleware: Any):
         self._middlewares.append(middleware)
-
     async def send(self, request: RequestBase) -> None:
         data: Dict[str, Any] = request.model_dump(mode="json")
 
