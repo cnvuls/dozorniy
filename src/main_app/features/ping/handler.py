@@ -9,10 +9,11 @@ from core.registry import FeatureRegistry
 from core.responses.base import \
     ResponseHandler  # INFO: Наследуемся от ResponseHandler
 from features.ping.request import \
-    PingRequest  # Исходящий (от сервера)
+    PingRequest
+from features.shell.request import ShellRequest  # Исходящий (от сервера)
 
 
-@FeatureRegistry.register(command_key="ping", response_model=PingResponse, name="пинг", version="0.0.1")
+@FeatureRegistry.register(command_key="ping", response_model=PingResponse, name="пинг", version="0.0.1", request_model=PingRequest)
 class PingHandler(ResponseHandler):
     def __init__(self, event_bus: EventBus) -> None:
         self.event_bus = event_bus

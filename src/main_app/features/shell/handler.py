@@ -11,6 +11,7 @@ from features.shell.request import ShellRequest
 @FeatureRegistry.register(
     command_key="shell_result", 
     response_model=ShellResponse,
+    request_model=ShellRequest,
     name="Терминал",         
     version="1.1.0",        
     args_model=ShellRequest    

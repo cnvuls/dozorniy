@@ -8,7 +8,8 @@ from pydantic import BaseModel
 @dataclass
 class FeatureMeta:
     command_key: str 
-    response_model: Type[Any] 
+    response_model: Type[Any]
+    request_model: Type[Any]
     handler_cls: Type[Any]  
     name: str
     version: str
@@ -25,7 +26,8 @@ class FeatureRegistry:
     def register(
             cls, 
             command_key: str, 
-            response_model: Type[Any],       
+            response_model: Type[Any],
+            request_model: Type[Any],
             name: str,
             version: str,
             args_model: Optional[Type[BaseModel]] = None,
@@ -40,6 +42,7 @@ class FeatureRegistry:
             meta = FeatureMeta(
                 command_key=command_key,
                 response_model=response_model,
+                request_model=request_model,
                 handler_cls=handler_cls,
                 name=name,
                 version=version,
