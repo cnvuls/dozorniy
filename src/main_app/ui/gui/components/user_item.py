@@ -1,11 +1,10 @@
 import flet as ft
-
 from core.events import EventBus
-from ui.gui.pages.featuremenu import CommandDialog 
+from ui.gui.pages.featuremenu import CommandDialog
 
 
 class UserItem(ft.Container):
-    def __init__(self, user_id: int, name: str, bus:EventBus):
+    def __init__(self, user_id: int, name: str, bus: EventBus):
         super().__init__(
             padding=10,
             border_radius=8,
@@ -57,7 +56,7 @@ class UserItem(ft.Container):
                                 ),
                                 ft.Text("Онлайн", size=12, color="green"),
                             ],
-                                spacing=5,
+                            spacing=5,
                         ),
                     ],
                     spacing=15,
@@ -65,9 +64,9 @@ class UserItem(ft.Container):
                 ft.IconButton(ft.Icons.MORE_VERT, on_click=self.click_menu),
             ],
         )
-    
-    def click_menu(self,e):
-        dialog = CommandDialog(self.user_id,self.bus)
+
+    def click_menu(self, _):
+        dialog = CommandDialog(self.user_id, self.bus)
         self.page.show_dialog(dialog)
 
     def _build_id_badge(self):
@@ -91,7 +90,6 @@ class UserItem(ft.Container):
             bgcolor=ft.Colors.BLACK26,
             border_radius=4,
         )
-    
 
     def refresh_info_text(self):
         self.info_text.value = (

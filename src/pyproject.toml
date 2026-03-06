@@ -22,3 +22,6 @@ extraPaths = ["main_app", "user_app"]
 python_executable = ".venv/bin/python"
 # Игнорируем проверки внутри папки окружения, чтобы не тратить ресурсы
 exclude = ["^\\.venv/"]
+
+[dependency-groups]
+dev = ["types-aiofiles>=25.1.0.20251011"]

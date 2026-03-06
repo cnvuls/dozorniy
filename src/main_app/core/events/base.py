@@ -1,13 +1,16 @@
 import asyncio
-from typing import Dict, Type, Callable, List, Any, TypeVar
 from abc import ABC
+from typing import Any, Callable, Dict, List, Type, TypeVar
+
 from pydantic import BaseModel
+
 
 class AbstractEvent(BaseModel, ABC):
     pass
 
 
 T = TypeVar("T", bound=BaseModel)
+
 
 class EventBus:
     def __init__(self):
@@ -23,7 +26,7 @@ class EventBus:
         self._subscribers[event_type].append(callback)
 
         self._cache.clear()
-    
+
     def unsubscribe(self, event_Type: Type[T], callback: Callable) -> None:
         """Отписка от события (также базовых классов)"""
         if event_Type in self._subscribers:
@@ -53,5 +56,3 @@ class EventBus:
 
         for handler in handlers:
             asyncio.create_task(handler(event))
-
-
