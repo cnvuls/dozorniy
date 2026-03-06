@@ -5,6 +5,7 @@ import flet as ft
 from core.events import EventBus
 from core.events.other import RequestFeatureList, ResponseFeatureList
 from core.registry import FeatureMeta
+#TODO: Сделать раздельные классы
 
 class CommandDialog(ft.AlertDialog):
     def __init__(self, user_id:int, bus: EventBus):

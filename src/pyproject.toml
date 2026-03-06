@@ -17,12 +17,8 @@ venvPath = "."
 venv = ".venv"
 extraPaths = ["main_app", "user_app"]
 
-reportAny = false
-reportExplicitAny = false
-reportUnknownVariableType = false
-reportUnknownMemberType = false
-reportUnknownArgumentType = false
-reportUnknownParameterType = false
-reportDeprecated = false
-reportImplicitRelativeImport = "none"
-reportMissingTypeArgument = false
+[tool.mypy]
+# Указываем Mypy использовать Python из твоего виртуального окружения
+python_executable = ".venv/bin/python"
+# Игнорируем проверки внутри папки окружения, чтобы не тратить ресурсы
+exclude = ["^\\.venv/"]

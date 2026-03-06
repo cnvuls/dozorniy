@@ -1,30 +1,23 @@
 import asyncio
 import os
-import sys
 from dataclasses import dataclass
 
 from connection.web_socket import WebSocketConnection
 from core.dispatcher import ResponseDispatcher
-from core.events import (
-    ConsoleLogEvent,
-    EventBus,
-    InfoLogEvent,
-    SendingCommand,
-    UpdateUserEvent,
-)
-from core.services.feature_service import FeatureService
+from core.events import ConsoleLogEvent, EventBus, SendingCommand, UpdateUserEvent
 from core.loader import autodiscover_features
 from core.registry import FeatureRegistry
 from core.responses.responsebus import ResponseBus
+from core.services.feature_service import FeatureService
 from features.shell.request import ShellRequest
 from ui.abstracts.base import ServerConnection
 from ui.gui_factory import GuiFactory
 
+
 @dataclass
 class ServerConfig:
-   host: str = "0.0.0.0"
-   port: int = 8888
-
+    host: str = "0.0.0.0"
+    port: int = 8888
 
 
 FEATURES_PATH = os.path.join(os.path.dirname(__file__), "features")
@@ -45,7 +38,6 @@ class ServerApp:
         self.feature_service = FeatureService(self.bus)
         self._setup_server_subscriptions()
 
-    
     def _load_and_setup_features(self):
         autodiscover_features()
         features_meta = FeatureRegistry.get_features()
@@ -59,20 +51,31 @@ class ServerApp:
             handler_instance = meta.handler_cls(self.bus)
             self.resp_bus.register(meta.response_model, handler_instance)
 
-
     async def _handle_server_toggle(self, event: ServerConnection):
         if event.data:
             if self._server_task is None or self._server_task.done():
-                await self.bus.publish(ConsoleLogEvent(text="🚀 [SYSTEM]: Запуск сервера...",source="main"))
+                await self.bus.publish(
+                    ConsoleLogEvent(
+                        text="🚀 [SYSTEM]: Запуск сервера...", source="main"
+                    )
+                )
                 self._server_task = asyncio.create_task(self.server.main())
         else:
             if self._server_task and not self._server_task.done():
-                await self.bus.publish(ConsoleLogEvent(text="🛑 [SYSTEM]: Остановка сервера...",source="main"))
+                await self.bus.publish(
+                    ConsoleLogEvent(
+                        text="🛑 [SYSTEM]: Остановка сервера...", source="main"
+                    )
+                )
                 self._server_task.cancel()
                 try:
                     await self._server_task
                 except asyncio.CancelledError:
-                    await self.bus.publish(ConsoleLogEvent(text="✅ [SYSTEM]: Сервер успешно остановлен", source="main"))
+                    await self.bus.publish(
+                        ConsoleLogEvent(
+                            text="✅ [SYSTEM]: Сервер успешно остановлен", source="main"
+                        )
+                    )
                 finally:
                     self._server_task = None
 

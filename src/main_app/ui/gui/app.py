@@ -1,41 +1,49 @@
 from enum import IntEnum
-from math import exp
-from tkinter import E
+
 import flet as ft
 from core.events import EventBus
 from ui.abstracts import UiAbstract
 from ui.abstracts.base import ServerConnection
+from ui.gui.components.logs_list import ListLog
+from ui.gui.components.output_log import OutputLog
 from ui.gui.components.user_list import ListUsers
 from ui.gui.pages.dashboard import DashboardPage
-from ui.gui.pages.settings import SettingsPage
-from ui.gui.components.output_log import OutputLog
 from ui.gui.pages.logs import LogsPage
-from ui.gui.components.logs_list import ListLog
+from ui.gui.pages.settings import SettingsPage
+
 
 class Routes(IntEnum):
     DASHBOARD = 0
     LOGS = 1
     SETTINGS = 2
 
+
 class DozorniyApp(UiAbstract):
     def __init__(self, bus: EventBus):
         self.page: ft.Page | None = None
         self.bus: EventBus = bus
-
         self.user_list_view = ListUsers(bus=self.bus)
         self.log_window = OutputLog(bus=self.bus)
         self.list_log = ListLog(bus=self.bus)
 
-        self.dashboard = DashboardPage(user_list=self.user_list_view, output_log=self.log_window,bus=bus)
+        self.dashboard = DashboardPage(
+            user_list=self.user_list_view, output_log=self.log_window, bus=bus
+        )
         self.settings = SettingsPage()
         self.logs = LogsPage(self.list_log)
-        
+
         self.content_holder = ft.Container(expand=True, padding=20)
 
         self.pages: dict[int, ft.Container] = {
-            Routes.DASHBOARD: ft.Container(content=self.dashboard, visible=True, expand=True),
-            Routes.LOGS: ft.Container(content=ft.Container(content=self.logs), visible=False, expand=True),
-            Routes.SETTINGS: ft.Container(content=self.settings, visible=False, expand=True),
+            Routes.DASHBOARD: ft.Container(
+                content=self.dashboard, visible=True, expand=True
+            ),
+            Routes.LOGS: ft.Container(
+                content=ft.Container(content=self.logs), visible=False, expand=True
+            ),
+            Routes.SETTINGS: ft.Container(
+                content=self.settings, visible=False, expand=True
+            ),
         }
 
     async def navigate(self, e):
@@ -44,8 +52,8 @@ class DozorniyApp(UiAbstract):
             return
         new_page = self.pages[selected_index]
         # Гарантируем, что она отобразится
-        new_page.visible = True 
-        
+        new_page.visible = True
+
         self.content_holder.content = new_page
         self.content_holder.update()
 
@@ -63,7 +71,7 @@ class DozorniyApp(UiAbstract):
             active_color=ft.Colors.PRIMARY,
             on_change=self._toggle_switch,
         )
-        
+
         self.content_holder.content = self.dashboard
 
         self.sidebar = ft.NavigationRail(
@@ -78,15 +86,9 @@ class DozorniyApp(UiAbstract):
             on_change=self.navigate,
             trailing=self.server_switch,
         )
-  
 
         layout = ft.Row(
-            controls=[
-                self.sidebar,
-                ft.VerticalDivider(width=1),
-                self.content_holder
-                
-            ],
+            controls=[self.sidebar, ft.VerticalDivider(width=1), self.content_holder],
             expand=True,
             spacing=0,
         )
