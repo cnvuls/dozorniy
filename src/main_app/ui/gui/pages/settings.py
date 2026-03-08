@@ -1,12 +1,13 @@
 import flet as ft
 
+
 class SettingsPage(ft.Container):
     def __init__(self):
         super().__init__(padding=20, alignment=ft.alignment.Alignment.TOP_LEFT)
 
         self.port_input = ft.TextField(label="Server Port", value="8000")
 
-        settings_controls: list[ft.Control] = [
+        settings_controls = [
             ft.Text("Global Settings", size=25),
             self.port_input,
             ft.ElevatedButton(
@@ -18,10 +19,3 @@ class SettingsPage(ft.Container):
 
     async def save_config(self):
         print(f"Saving config: Port {self.port_input.value}")
-
-
-
-
-
-
-

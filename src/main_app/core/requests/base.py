@@ -3,7 +3,7 @@ import uuid
 from abc import ABC, abstractmethod
 from typing import Final
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class RequestBase(BaseModel):
@@ -12,7 +12,6 @@ class RequestBase(BaseModel):
     Базовая команда, которую Сервер шлет Агенту.
     """
 
-    type: str = ""
     event_id: uuid.UUID = Field(default_factory=uuid.uuid4)
     timestamp: float = Field(default_factory=lambda: time.time())
     user_id: int
