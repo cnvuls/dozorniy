@@ -1,5 +1,3 @@
-import asyncio
-
 import flet as ft
 from core.events import EventBus
 from core.events.other import RequestFeatureList, ResponseFeatureList

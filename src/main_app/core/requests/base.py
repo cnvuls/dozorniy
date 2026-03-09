@@ -12,6 +12,7 @@ class RequestBase(BaseModel):
     Базовая команда, которую Сервер шлет Агенту.
     """
 
+    type: str = "default"
     event_id: uuid.UUID = Field(default_factory=uuid.uuid4)
     timestamp: float = Field(default_factory=lambda: time.time())
     user_id: int

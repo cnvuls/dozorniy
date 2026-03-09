@@ -9,7 +9,6 @@ from ui.gui.components.feature_list import FeatureList
 
 # TODO: Сделать раздельные классы
 
-
 class CommandDialog(ft.AlertDialog):
     def __init__(self, user_id: int, bus: EventBus):
         super().__init__()
@@ -27,7 +26,7 @@ class CommandDialog(ft.AlertDialog):
     async def open_feature_form(self, meta: FeatureMeta):
         from ui.gui.components.feature_form import FeatureForm
 
-        form = FeatureForm(meta, self.bus, on_back=self.restore_list)
+        form = FeatureForm(meta, self.bus, user_id=self.user_id, on_back=self.restore_list)
 
         self.content = form
 

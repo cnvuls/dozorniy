@@ -8,6 +8,6 @@ class ShellRequest(RequestBase):
     Класс от сервера к клиенту очень простой и базовый
     """
 
-    type: Literal["shell"] = "shell"
+    type: str = "shell"
 
     command: str

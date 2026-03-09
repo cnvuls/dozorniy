@@ -1,5 +1,4 @@
-from core.requests.base import \
-    RequestBase  # INFO: Смена импорта на Request
+from core.requests.base import RequestBase  # INFO: Смена импорта на Request
 
 
 class PingRequest(RequestBase):
@@ -9,12 +8,9 @@ class PingRequest(RequestBase):
     Для Агента это является входящей командой (Request).
     """
 
-    @property
-    def type(self) -> str:
-        return "ping"
+    type: str = "ping"
 
     message: str = "pong"
-    server_time: float
 
     # INFO: Поле reply_to (ID исходного пинга) уже есть в RequestBase?
     # Если нет, лучше добавить его здесь или в базе.
