@@ -11,7 +11,9 @@ class FeatureForm(ft.Container):
         self.page: ft.Page
         self.meta = meta
         self.bus = bus
-        self.user_id = user_id
+        self.width = 300
+        self.height = 400
+        self.user_id: int = user_id
         self.on_back = on_back
         self.inputs = {}
 
@@ -62,9 +64,7 @@ class FeatureForm(ft.Container):
         try:
             validated = self.meta.args_model(**data)
             payload = validated.model_dump_json()
-            await self.bus.publish(
-                SendingCommand(user_id=str(self.user_id), text=payload)
-            )
-            await self.page.run_task(self.on_back)
+            await self.bus.publish(SendingCommand(user_id=self.user_id, text=payload))
+            self.page.pop_dialog()
         except Exception as ex:
             print(f"❌ Ошибка валидации: {ex}")

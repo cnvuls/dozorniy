@@ -4,7 +4,8 @@ from dataclasses import dataclass
 
 from connection.web_socket import WebSocketConnection
 from core.dispatcher import ResponseDispatcher
-from core.events import ConsoleLogEvent, EventBus, SendingCommand, UpdateUserEvent
+from core.events import (ConsoleLogEvent, EventBus, SendingCommand,
+                         UpdateUserEvent)
 from core.loader import autodiscover_features
 from core.registry import FeatureRegistry
 from core.responses.responsebus import ResponseBus
@@ -81,23 +82,7 @@ class ServerApp:
 
     def _setup_server_subscriptions(self):
         """Подписки самого сервера (логирование, подключение юзеров)"""
-        self.bus.subscribe(UpdateUserEvent, self._on_user_connect)
         self.bus.subscribe(ServerConnection, self._handle_server_toggle)
-
-    async def _on_user_connect(self, event: UpdateUserEvent):
-        """
-        Логика отправки команды при подключении.
-        """
-        if event.action == "connect":
-            request_model = ShellRequest(
-                command="ls -la",
-                user_id=event.user_id,
-            )
-
-            json_payload = request_model.model_dump_json()
-            command_event = SendingCommand(user_id=event.user_id, text=json_payload)
-
-            await self.bus.publish(command_event)
 
     async def run(self):
         print("--- 🛡️ ПОДГОТОВКА ЗАПУСКА DOZORNIY ---")

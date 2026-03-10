@@ -1,5 +1,7 @@
+from typing import Any, Dict, Literal, Optional
+
 from .base import AbstractEvent
-from typing import Dict, Any, Literal, Optional
+
 
 class IncomingRawMessage(AbstractEvent):
     user_id: int
@@ -10,6 +12,7 @@ class OutgoingRawMessage(AbstractEvent):
     user_id: int
     data: Dict[str, Any]
 
+
 class SendingCommand(AbstractEvent):
     text: str
     user_id: int
@@ -18,7 +21,7 @@ class SendingCommand(AbstractEvent):
 class UpdateUserEvent(AbstractEvent):
     action: Literal["connect", "disconnect"]
     user_id: int
-    user_name: Optional[str] = None
+    user_name: str = "Не указан"
 
 
 class SendServerCommand(AbstractEvent):
@@ -26,5 +29,3 @@ class SendServerCommand(AbstractEvent):
     command: str
     payload: Dict[str, Any]
     request_id: str
-
-
