@@ -8,6 +8,7 @@ dependencies = [
     "aiofiles>=25.1.0",
     "flet>=0.80.2",
     "pydantic>=2.12.5",
+    "pydantic-settings>=2.13.1",
     "websockets>=15.0.1",
 ]
 

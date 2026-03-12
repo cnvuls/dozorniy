@@ -16,8 +16,8 @@ def autodiscover_features(base_package: str = "features"):
     if not os.path.exists(features_path):
         print(f"⚠️  Feature folder not found at: {features_path}")
         return
-
     for _, name, is_pkg in pkgutil.iter_modules([features_path]):
+        print(name, is_pkg)
         if is_pkg:
             module_name = f"{base_package}.{name}.handler"
             try:

@@ -11,4 +11,4 @@ class RequestBase(BaseModel):
     """
 
     type: str
-    event_id: UUID
+    event_id: UUID | None

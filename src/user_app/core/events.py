@@ -24,6 +24,16 @@ class ReceiveMessage(AbstractEvent):
     text: str
 
 
+@dataclass
+class ConnectedEvent(AbstractEvent):
+    pass
+
+
+@dataclass
+class DisconnectedEvent(AbstractEvent):
+    pass
+
+
 class EventBus:
     def __init__(self):
 

@@ -1,5 +1,6 @@
 import flet as ft
 from core.events import EventBus
+from core.events.other import TelemetryUpdateEvent
 from ui.gui.pages.featuremenu import CommandDialog
 
 
@@ -11,7 +12,8 @@ class UserItem(ft.Container):
             border=ft.border.all(1, ft.Colors.PRIMARY),
         )
         self.user_id = user_id
-        self.telemetry_cache = {"window": "учит пайтон"}
+
+        # TODO: Переделать телеметрию
         self.ink = True
         self.bus = bus
         self.on_click = lambda x: x
@@ -34,8 +36,9 @@ class UserItem(ft.Container):
             border_radius=6,
         )
         self.name_text = ft.Text(name, weight=ft.FontWeight.BOLD, size=16)
-        self.info_text = ft.Text(size=12, italic=True, color=ft.Colors.OUTLINE)
-        self.refresh_info_text()
+        self.info_text = ft.Text(
+            value="Нет данных", size=12, italic=True, color=ft.Colors.OUTLINE
+        )
 
     def _build_upper_section(self):
         return ft.Row(
@@ -91,10 +94,8 @@ class UserItem(ft.Container):
             border_radius=4,
         )
 
-    def refresh_info_text(self):
-        self.info_text.value = (
-            f"Активность: {self.telemetry_cache.get('window', 'N/A')}"
-        )
+    def refresh_info_text(self, event: TelemetryUpdateEvent):
+        self.info_text.value = event.text
         try:
             self.update()
         except Exception:

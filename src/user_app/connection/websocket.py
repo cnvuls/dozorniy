@@ -6,7 +6,7 @@ from typing import Optional
 
 import websockets
 from connection.abstracts import ConnectionBase
-from core.events import EventBus, ReceiveMessage, SendMessage
+from core.events import EventBus, ReceiveMessage, SendMessage, ConnectedEvent, DisconnectedEvent
 
 
 class WebsocketConnection(ConnectionBase):
@@ -47,8 +47,13 @@ class WebsocketConnection(ConnectionBase):
                     self.logger.info(
                         "Соединение установлено с %s:%s", self.ip, self.port
                     )
-                    async for raw in sock:
-                        await self.receive_message(str(raw))
+                    await self.bus.publish(ConnectedEvent())
+                    try:
+                        async for raw in sock:
+                            await self.receive_message(str(raw))
+                    finally:
+                        self.socket = None
+                        await self.bus.publish(DisconnectedEvent())
             except Exception as exc:
                 self.logger.warning("Проблемы с соединением: %s", exc)
                 await asyncio.sleep(self.reconnect_delay)

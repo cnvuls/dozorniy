@@ -27,7 +27,7 @@ class DozorniyApp(UiAbstract):
         self.list_log = ListLog(bus=self.bus)
 
         self.dashboard = DashboardPage(
-            user_list=self.user_list_view, output_log=self.log_window, bus=bus
+            user_list=self.user_list_view, output_log=self.log_window
         )
         self.settings = SettingsPage()
         self.logs = LogsPage(self.list_log)
@@ -51,7 +51,7 @@ class DozorniyApp(UiAbstract):
         if self.page is None:
             return
         new_page = self.pages[selected_index]
-        # Гарантируем, что она отобразится
+
         new_page.visible = True
 
         self.content_holder.content = new_page

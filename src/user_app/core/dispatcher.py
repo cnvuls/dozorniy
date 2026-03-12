@@ -31,7 +31,6 @@ class ResponseDispatcher:
         msg_type = data.get("type", "")
         model_cls = self._type_map.get(msg_type)
 
-        print("_______________")
         if not model_cls:
             return
 

@@ -5,18 +5,17 @@ from typing import Any, List, Optional, Tuple, Type
 
 from pydantic import BaseModel
 
+
 @dataclass
 class FeatureMeta:
-    command_key: str 
+    command_key: str
     response_model: Type[Any]
-    request_model: Type[Any]
-    handler_cls: Type[Any]  
+    handler_cls: Type[Any]
     name: str
     version: str
+    request_model: Optional[Type[Any]] = None
     args_model: Optional[Type[BaseModel]] = None
     is_hidden: bool = False
-
-
 
 
 class FeatureRegistry:
@@ -24,21 +23,22 @@ class FeatureRegistry:
 
     @classmethod
     def register(
-            cls, 
-            command_key: str, 
-            response_model: Type[Any],
-            request_model: Type[Any],
-            name: str,
-            version: str,
-            args_model: Optional[Type[BaseModel]] = None,
-            is_hidden: bool = False
-        ):
+        cls,
+        command_key: str,
+        response_model: Type[Any],
+        # TODO: сделать нормальную типизацию и сделать отдельные feature
+        name: str,
+        version: str,
+        request_model: Optional[Type[Any]] = None,
+        args_model: Optional[Type[BaseModel]] = None,
+        is_hidden: bool = False,
+    ):
         """
         Декоратор для регистрации хендлеров.
         Связывает: строку JSON -> Pydantic модель -> Класс Хендлера
         """
 
-        def decorator(handler_cls): 
+        def decorator(handler_cls):
             meta = FeatureMeta(
                 command_key=command_key,
                 response_model=response_model,
@@ -47,11 +47,11 @@ class FeatureRegistry:
                 name=name,
                 version=version,
                 args_model=args_model,
-                is_hidden=is_hidden
+                is_hidden=is_hidden,
             )
-            
+
             cls._features.append(meta)
-            
+
             return handler_cls
 
         return decorator
