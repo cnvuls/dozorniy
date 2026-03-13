@@ -9,14 +9,7 @@ class ListUsers(ft.ListView):
         super().__init__(expand=True, spacing=10, padding=10)
         self.bus = bus
         self.bus.subscribe(UpdateUserEvent, self.update_user)
-        self.bus.subscribe(TelemetryUpdateEvent, self.telemetry)
         self.user_dict: dict[int, UserItem] = {}
-
-    async def telemetry(self, event: TelemetryUpdateEvent):
-        print("hu")
-        card = self.user_dict.get(event.user_id)
-        if card:
-            card.refresh_info_text(event)
 
     async def update_user(self, event: UpdateUserEvent):
         if event.action == "disconnect":

@@ -44,7 +44,7 @@ wheels = [
 
 [[package]]
 name = "flet"
-version = "0.80.5"
+version = "0.82.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx", marker = "platform_system != 'Pyodide'" },
@@ -52,9 +52,9 @@ dependencies = [
     { name = "oauthlib", marker = "platform_system != 'Pyodide'" },
     { name = "repath" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/32/79/5b4e98933b77030f5fafc0ae75fd9a62891712fa8b81280a362eefbb1fcb/flet-0.80.5.tar.gz", hash = "sha256:9317dba543cf6a8773f991d08c570bee377cc916780ed57362114e4777c1ea5c", size = 391425, upload-time = "2026-01-30T00:43:28.017Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/66/a7/46e73c489ec0f3fe65c3c183ddd64ef5c7fff14da2be81df6c0b6ad3e8fc/flet-0.82.2.tar.gz", hash = "sha256:eaad9675ea0c5b81a256c39f92354b219ca3c1fbe27ead7d2a7667a71c835dbe", size = 445579, upload-time = "2026-03-10T01:13:55.398Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a5/55/71f796477263f76b2e25b21dab24ed4acb1988199ff6bc0d9640cdda16a1/flet-0.80.5-py3-none-any.whl", hash = "sha256:8ce4cde04fa698515d273b8dcb6261a873e965c493740c590ca09b8e698cae16", size = 484605, upload-time = "2026-01-30T00:43:26.198Z" },
+    { url = "https://files.pythonhosted.org/packages/b0/e3/4b8ee6a4bc226faa036056b6f24e27a64d41f85f70bc85bb17f0f386c947/flet-0.82.2-py3-none-any.whl", hash = "sha256:278806e5480423772d342566e49f06867bf13ced709bf449890f0bcb27d5a101", size = 541512, upload-time = "2026-03-10T01:13:53.679Z" },
 ]
 
 [[package]]
@@ -306,7 +306,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "aiofiles", specifier = ">=25.1.0" },
-    { name = "flet", specifier = ">=0.80.2" },
+    { name = "flet", specifier = ">=0.82.0" },
     { name = "pydantic", specifier = ">=2.12.5" },
     { name = "pydantic-settings", specifier = ">=2.13.1" },
     { name = "websockets", specifier = ">=15.0.1" },

@@ -1,9 +1,15 @@
+from turtle import bgcolor
+
 import flet as ft
 from core.events import EventBus
 from core.events.other import TelemetryUpdateEvent
 from ui.gui.pages.featuremenu import CommandDialog
 
 
+
+
+
+# TODO: Переделать в listitem
 class UserItem(ft.Container):
     def __init__(self, user_id: int, name: str, bus: EventBus):
         super().__init__(
@@ -22,47 +28,36 @@ class UserItem(ft.Container):
         self.content = ft.Column(
             tight=True,
             controls=[
-                self._build_upper_section(),
-                self._build_lower_section(),
+                self._build(),
             ],
         )
 
     def _init_state_controls(self, name: str):
         self.image_control = ft.Image(
-            src="images/asset.jpg",
+            src="./ui/gui/assets/asset.jpg",
             width=160,
             height=90,
             fit=ft.BoxFit.COVER,
             border_radius=6,
         )
         self.name_text = ft.Text(name, weight=ft.FontWeight.BOLD, size=16)
-        self.info_text = ft.Text(
-            value="Нет данных", size=12, italic=True, color=ft.Colors.OUTLINE
-        )
 
-    def _build_upper_section(self):
+    def _build(self):
         return ft.Row(
             alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
             vertical_alignment=ft.CrossAxisAlignment.START,
+            expand=True,
             controls=[
                 ft.Row(
                     [
                         ft.Container(content=self.image_control, border_radius=6),
                         ft.Column(
                             [
-                                ft.Row(
-                                    [
-                                        self.name_text,
-                                        self._build_id_badge(),
-                                    ],
-                                    spacing=10,
-                                ),
-                                ft.Text("Онлайн", size=12, color="green"),
+                                self.name_text,
+                                self._build_id_badge(),
                             ],
-                            spacing=5,
                         ),
-                    ],
-                    spacing=15,
+                    ]
                 ),
                 ft.IconButton(ft.Icons.MORE_VERT, on_click=self.click_menu),
             ],
@@ -79,24 +74,3 @@ class UserItem(ft.Container):
             bgcolor=ft.Colors.PRIMARY,
             border_radius=4,
         )
-
-    def _build_lower_section(self):
-        return ft.Container(
-            content=ft.Row(
-                [
-                    ft.Icon(ft.Icons.MONITOR_HEART, size=12, color=ft.Colors.OUTLINE),
-                    self.info_text,
-                ],
-                spacing=5,
-            ),
-            padding=8,
-            bgcolor=ft.Colors.BLACK26,
-            border_radius=4,
-        )
-
-    def refresh_info_text(self, event: TelemetryUpdateEvent):
-        self.info_text.value = event.text
-        try:
-            self.update()
-        except Exception:
-            pass
