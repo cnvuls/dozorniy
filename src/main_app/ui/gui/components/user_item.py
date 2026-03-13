@@ -6,10 +6,6 @@ from core.events.other import TelemetryUpdateEvent
 from ui.gui.pages.featuremenu import CommandDialog
 
 
-
-
-
-# TODO: Переделать в listitem
 class UserItem(ft.Container):
     def __init__(self, user_id: int, name: str, bus: EventBus):
         super().__init__(
@@ -19,7 +15,6 @@ class UserItem(ft.Container):
         )
         self.user_id = user_id
 
-        # TODO: Переделать телеметрию
         self.ink = True
         self.bus = bus
         self.on_click = lambda x: x
@@ -41,6 +36,12 @@ class UserItem(ft.Container):
             border_radius=6,
         )
         self.name_text = ft.Text(name, weight=ft.FontWeight.BOLD, size=16)
+        self.id_badge = ft.Container(
+            content=ft.Text(f"#{self.user_id}", size=10, color=ft.Colors.ON_PRIMARY),
+            padding=2,
+            bgcolor=ft.Colors.PRIMARY,
+            border_radius=4,
+        )
 
     def _build(self):
         return ft.Row(
@@ -54,7 +55,7 @@ class UserItem(ft.Container):
                         ft.Column(
                             [
                                 self.name_text,
-                                self._build_id_badge(),
+                                self.id_badge,
                             ],
                         ),
                     ]
@@ -66,11 +67,3 @@ class UserItem(ft.Container):
     def click_menu(self, _):
         dialog = CommandDialog(self.user_id, self.bus)
         self.page.show_dialog(dialog)
-
-    def _build_id_badge(self):
-        return ft.Container(
-            content=ft.Text(f"#{self.user_id}", size=10, color=ft.Colors.ON_PRIMARY),
-            padding=2,
-            bgcolor=ft.Colors.PRIMARY,
-            border_radius=4,
-        )

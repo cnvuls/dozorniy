@@ -3,15 +3,14 @@ import os
 import sys
 
 from connection.websocket import WebsocketConnection
+from core.config import config
 from core.dispatcher import RequestDispatcher, ResponseDispatcher
 from core.events import EventBus
 from core.loader import autodiscover_features
 from core.registry import FeatureRegistry
 from core.responses.bus import ResponseBus
-from core.config import config
-
-from features.telemetry.monitor import TelemetryMonitor
 from features.screen.monitor import ScreenMonitor
+
 
 class ClientApp:
     def __init__(self) -> None:
@@ -40,16 +39,17 @@ class ClientApp:
             except Exception as e:
                 print(f"Error registering {meta.command_key}: {e}")
 
-        self.telemetry = TelemetryMonitor(self.bus, interval=config.TELEMETRY_INTERVAL)
         self.screen = ScreenMonitor(self.bus, interval=config.SCREEN_INTERVAL)
 
     async def run(self) -> None:
         self._init_layers()
         await self.connection.main_loop()
 
+
 async def main() -> None:
     app = ClientApp()
     await app.run()
+
 
 if __name__ == "__main__":
     try:

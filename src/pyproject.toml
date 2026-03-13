@@ -16,12 +16,10 @@ dependencies = [
 typeCheckingMode = "standard"
 venvPath = "."
 venv = ".venv"
-extraPaths = ["main_app", "user_app"]
+executionEnviroments = [{ root = "main_app" }, { root = "user_app" }]
 
 [tool.mypy]
-# Указываем Mypy использовать Python из твоего виртуального окружения
 python_executable = ".venv/bin/python"
-# Игнорируем проверки внутри папки окружения, чтобы не тратить ресурсы
 exclude = ["^\\.venv/"]
 
 [dependency-groups]

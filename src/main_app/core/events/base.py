@@ -39,7 +39,6 @@ class EventBus:
     async def publish(self, event: Any) -> None:
         """Опубликовать событие. Работает с учетом наследования."""
         event_type = type(event)
-        print(event_type)
         handlers = self._cache.get(event_type)
 
         if handlers is None:
