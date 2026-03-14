@@ -6,6 +6,7 @@ from pydantic import Base64Bytes
 
 from core.events import EventBus
 from core.events.other import TelemetryUpdateEvent
+from ui.gui.pages.demonstration import DemonstrationPage
 from ui.gui.pages.featuremenu import CommandDialog
 
 
@@ -17,11 +18,10 @@ class UserItem(ft.Container):
             border=ft.border.all(1, ft.Colors.PRIMARY),
         )
         self.user_id = user_id
-
         self.ink = True
         self.bus = bus
-        self.on_click = lambda x: x
         self._init_state_controls(name)
+        self.on_click = self.callback
 
         self.content = ft.Column(
             tight=True,
@@ -30,12 +30,16 @@ class UserItem(ft.Container):
             ],
         )
 
+    def callback(self, _):
+        demo = DemonstrationPage()
+        self.page.data.toggle_fullscreen(True, demo)
+
     def _init_state_controls(self, name: str):
         self.image_control = ft.Image(
             src="./ui/gui/assets/asset.jpg",
             width=160,
             height=90,
-            fit=ft.BoxFit.COVER,
+            fit=ft.BoxFit.CONTAIN,
             border_radius=6,
             gapless_playback=True,
         )

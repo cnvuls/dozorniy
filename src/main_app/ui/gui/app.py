@@ -47,6 +47,15 @@ class DozorniyApp(UiAbstract):
             ),
         }
 
+    def toggle_fullscreen(self, show: bool, control: ft.Control):
+        self.sidebar.visible = not show
+        self.divider.visible = not show
+        if control:
+            self.content_holder.content = control
+
+        if self.page:
+            self.page.update()
+
     async def navigate(self, e):
         selected_index = int(e.data)
         if self.page is None:
@@ -64,6 +73,7 @@ class DozorniyApp(UiAbstract):
 
     async def main(self, page: ft.Page):
         self.page = page
+        self.page.data = self
         self.page.title = "Dozorniy RMM"
         self.page.theme = ft.Theme(color_scheme_seed="red")
         self.page.padding = 0
@@ -72,7 +82,7 @@ class DozorniyApp(UiAbstract):
             active_color=ft.Colors.PRIMARY,
             on_change=self._toggle_switch,
         )
-
+        self.divider = ft.VerticalDivider(width=1)
         self.content_holder.content = self.dashboard
 
         self.sidebar = ft.NavigationRail(
@@ -89,7 +99,7 @@ class DozorniyApp(UiAbstract):
         )
 
         layout = ft.Row(
-            controls=[self.sidebar, ft.VerticalDivider(width=1), self.content_holder],
+            controls=[self.sidebar, self.divider, self.content_holder],
             expand=True,
             spacing=0,
         )
