@@ -1,0 +1,24 @@
+[project]
+name = "user_app"
+version = "0.1.0"
+description = "Dozorniy Agent (User App)"
+requires-python = ">=3.12"
+dependencies = [
+    "aiofiles>=25.1.0",
+    "mss>=10.1.0",
+    "opencv-python>=4.13.0.92",
+    "pydantic>=2.12.5",
+    "pydantic-settings>=2.13.1",
+    "websockets>=15.0.1",
+]
+
+[tool.basedpyright]
+typeCheckingMode = "standard"
+venvPath = "."
+venv = ".venv"
+
+[tool.mypy]
+python_executable = ".venv/bin/python"
+mypy_path = "."
+namespace_packages = true
+explicit_package_bases = true

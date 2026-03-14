@@ -1,5 +1,7 @@
 from typing import Any, Dict, Literal, Optional
 
+from pydantic import Base64Bytes
+
 from .base import AbstractEvent
 
 
@@ -15,6 +17,11 @@ class OutgoingRawMessage(AbstractEvent):
 
 class SendingCommand(AbstractEvent):
     text: str
+    user_id: int
+
+
+class FrameData(AbstractEvent):
+    base64_img: Base64Bytes
     user_id: int
 
 

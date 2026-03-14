@@ -1,14 +1,11 @@
 [project]
-name = "src"
+name = "main_app"
 version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
+description = "Dozorniy Server (Main App)"
 requires-python = ">=3.12"
 dependencies = [
     "aiofiles>=25.1.0",
     "flet>=0.82.0",
-    "mss>=10.1.0",
-    "opencv-python>=4.13.0.92",
     "pydantic>=2.12.5",
     "pydantic-settings>=2.13.1",
     "websockets>=15.0.1",
@@ -18,11 +15,9 @@ dependencies = [
 typeCheckingMode = "standard"
 venvPath = "."
 venv = ".venv"
-executionEnviroments = [{ root = "main_app" }, { root = "user_app" }]
 
 [tool.mypy]
 python_executable = ".venv/bin/python"
-exclude = ["^\\.venv/"]
-
-[dependency-groups]
-dev = ["types-aiofiles>=25.1.0.20251011"]
+mypy_path = "."
+namespace_packages = true
+explicit_package_bases = true
