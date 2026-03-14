@@ -7,15 +7,13 @@ from websockets import serve
 
 from connection.abstracts import ConnectionBase
 from core.events import (EventBus, IncomingRawMessage, InfoLogEvent,
-                                  SendingCommand,
-                                  UpdateUserEvent)
+                         SendingCommand, UpdateUserEvent)
 
 
 class WebSocketConnection(ConnectionBase):
     def __init__(self, bus: EventBus) -> None:
         self._clients: Dict[int, websockets.ServerConnection] = {}
         self.bus = bus
-
 
         self.bus.subscribe(SendingCommand, self.send_message)
 
@@ -26,10 +24,10 @@ class WebSocketConnection(ConnectionBase):
     async def register_client(self, socket: websockets.ServerConnection) -> int:
         user_name = str(await socket.recv())
         user_id = len(self._clients) + 1
-        print(user_name)
         self._clients[user_id] = socket
-        await self.bus.publish(UpdateUserEvent(action="connect", user_id=user_id, user_name=user_name))
-        print(user_name)
+        await self.bus.publish(
+            UpdateUserEvent(action="connect", user_id=user_id, user_name=user_name)
+        )
         return user_id
 
     async def broadcast_message(self, text: str) -> None:
@@ -42,7 +40,9 @@ class WebSocketConnection(ConnectionBase):
     async def unregister_client(self, client_id: int) -> None:
         if client_id in self._clients:
             self._clients.pop(client_id)
-            await self.bus.publish(UpdateUserEvent(action="disconnect", user_id=client_id))
+            await self.bus.publish(
+                UpdateUserEvent(action="disconnect", user_id=client_id)
+            )
 
     async def stop(self):
         tasks = [
@@ -68,12 +68,14 @@ class WebSocketConnection(ConnectionBase):
         port = 8888
 
         await self.bus.publish(
-            InfoLogEvent(text=f"Server is activated on ws://127.0.0.1:{port}", source="websocket")
+            InfoLogEvent(
+                text=f"Server is activated on ws://127.0.0.1:{port}", source="websocket"
+            )
         )
 
         async with serve(self.handler_client, host, port, ping_timeout=10) as server:
             self._server_instance = server
-            await asyncio.Future() 
+            await asyncio.Future()
 
     async def main(self):
         await self.main_loop()

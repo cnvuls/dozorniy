@@ -1,6 +1,9 @@
+import base64
 from turtle import bgcolor
 
 import flet as ft
+from pydantic import Base64Bytes
+
 from core.events import EventBus
 from core.events.other import TelemetryUpdateEvent
 from ui.gui.pages.featuremenu import CommandDialog
@@ -34,6 +37,7 @@ class UserItem(ft.Container):
             height=90,
             fit=ft.BoxFit.COVER,
             border_radius=6,
+            gapless_playback=True,
         )
         self.name_text = ft.Text(name, weight=ft.FontWeight.BOLD, size=16)
         self.id_badge = ft.Container(
@@ -63,6 +67,11 @@ class UserItem(ft.Container):
                 ft.IconButton(ft.Icons.MORE_VERT, on_click=self.click_menu),
             ],
         )
+
+    def update_image(self, imgbase64: bytes):
+        b64_str = base64.b64encode(imgbase64).decode("utf-8")
+        self.image_control.src = f"data:image/jpeg;base64,{b64_str}"
+        self.image_control.update()
 
     def click_menu(self, _):
         dialog = CommandDialog(self.user_id, self.bus)

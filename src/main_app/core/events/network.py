@@ -21,7 +21,7 @@ class SendingCommand(AbstractEvent):
 
 
 class FrameData(AbstractEvent):
-    base64_img: Base64Bytes
+    base64_img: bytes
     user_id: int
 
 

@@ -1,6 +1,7 @@
 from enum import IntEnum
 
 import flet as ft
+
 from core.events import EventBus
 from ui.abstracts import UiAbstract
 from ui.abstracts.base import ServerConnection
