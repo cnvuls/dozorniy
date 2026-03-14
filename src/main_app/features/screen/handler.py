@@ -1,4 +1,4 @@
-from core.events import ConsoleLogEvent, EventBus
+from core.events import EventBus
 from core.events.network import FrameData
 from core.registry import FeatureRegistry
 from core.responses.base import ResponseHandler
@@ -19,11 +19,6 @@ class ShellHandler(ResponseHandler):
         self.bus: EventBus = bus
 
     async def handle(self, response: ScreenResponse) -> None:
-        await self.bus.publish(
-            ConsoleLogEvent(
-                text=f"Длина base64 {len(response.img_base64)}", source="feature.screen"
-            )
-        )
         await self.bus.publish(
             FrameData(base64_img=response.img_base64, user_id=response.user_id)
         )

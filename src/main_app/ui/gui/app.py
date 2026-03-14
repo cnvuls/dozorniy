@@ -47,7 +47,20 @@ class DozorniyApp(UiAbstract):
             ),
         }
 
+    def back_to_dashboard(self):
+        self.user_list_view.start_screen_updates()
+
+        self.sidebar.visible = True
+        self.divider.visible = True
+
+        self.content_holder.content = self.pages[Routes.DASHBOARD]
+
+        if self.page:
+            self.page.update()
+
     def toggle_fullscreen(self, show: bool, control: ft.Control):
+        self.user_list_view.stop_screen_updates()
+
         self.sidebar.visible = not show
         self.divider.visible = not show
         if control:

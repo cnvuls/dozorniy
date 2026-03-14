@@ -9,7 +9,7 @@ from features.screen.request import ScreenRequest
 class ScreenMonitor:
     def __init__(self, bus: EventBus, interval: int = 10):
         self.bus = bus
-        self.interval = 30
+        self.interval = 0.5
         self._task = None
 
         self.bus.subscribe(ConnectedEvent, self.start)
@@ -27,7 +27,7 @@ class ScreenMonitor:
     async def _loop(self):
         try:
             while True:
-                raw_frame = capture_screen(target_size=(160, 80))
+                raw_frame = capture_screen(target_size=(1920, 1080))
                 b64_string = to_base64(raw_frame)
 
                 req = ScreenRequest(
@@ -39,4 +39,3 @@ class ScreenMonitor:
                 await asyncio.sleep(self.interval)
         except asyncio.CancelledError:
             pass
-

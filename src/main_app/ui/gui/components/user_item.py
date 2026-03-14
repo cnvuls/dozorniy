@@ -31,7 +31,7 @@ class UserItem(ft.Container):
         )
 
     def callback(self, _):
-        demo = DemonstrationPage()
+        demo = DemonstrationPage(bus=self.bus, user_id=self.user_id)
         self.page.data.toggle_fullscreen(True, demo)
 
     def _init_state_controls(self, name: str):

@@ -23,6 +23,12 @@ class ListUsers(ft.ListView):
         if card in self.controls:
             card.update_image(event.base64_img)
 
+    def stop_screen_updates(self):
+        self.bus.unsubscribe(FrameData, self.screenupdate)
+
+    def start_screen_updates(self):
+        self.bus.subscribe(FrameData, self.screenupdate)
+
     async def update_user(self, event: UpdateUserEvent):
         if event.action == "disconnect":
             card = self.user_dict.pop(event.user_id, None)

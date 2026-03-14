@@ -1,50 +1,46 @@
 from collections import deque
-import flet as ft
-from core.events import EventBus, ConsoleLogEvent, InfoLogEvent
 
-class OutputLog(ft.Container): 
+import flet as ft
+
+from core.events import ConsoleLogEvent, EventBus, InfoLogEvent
+
+
+class OutputLog(ft.Container):
     def __init__(self, bus: EventBus):
         super().__init__()
         self.bus = bus
         self.expand = True
-        
+
         self.border = ft.border.all(1, ft.Colors.PRIMARY)
         self.border_radius = 5
         self.padding = 5
-        self._mount = False
         self.list_view = ft.ListView(
             expand=True,
             spacing=2,
             auto_scroll=True,
         )
-        
-        self.content = self.list_view 
-        
-        
+
+        self.content = self.list_view
 
     def did_mount(self):
-        self._mount = True
         self.bus.subscribe(ConsoleLogEvent, self.handle_output_event)
-    
+
     def will_unmount(self):
-        self._mount = False
         self.bus.unsubscribe(ConsoleLogEvent, self.handle_output_event)
 
     async def handle_output_event(self, event: ConsoleLogEvent):
         line = ft.Text(
-            f"> {event.text}", 
+            f"> {event.text}",
             color=ft.Colors.PRIMARY,
             selectable=True,
             font_family="Consolas",
-            text_align=ft.TextAlign.CENTER
+            text_align=ft.TextAlign.CENTER,
         )
-        
+
         self.list_view.controls.append(line)
 
-        MAX_LOG_LINES = 20 #TODO: сделать нормально настройку в config 
+        MAX_LOG_LINES = 20  # TODO: сделать нормально настройку в config
         if len(self.list_view.controls) > MAX_LOG_LINES:
             self.list_view.controls.pop(0)
 
-        if self._mount:
-            self.update()
-
+        self.update()

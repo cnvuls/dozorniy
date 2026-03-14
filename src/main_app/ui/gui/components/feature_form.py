@@ -1,8 +1,9 @@
 import flet as ft
+from pydantic_core import PydanticUndefined
+
 from core.events import EventBus, SendingCommand
 from core.registry import FeatureMeta
 from core.requests.base import RequestBase
-from pydantic_core import PydanticUndefined
 
 
 class FeatureForm(ft.Container):
@@ -65,6 +66,7 @@ class FeatureForm(ft.Container):
             validated = self.meta.args_model(**data)
             payload = validated.model_dump_json()
             await self.bus.publish(SendingCommand(user_id=self.user_id, text=payload))
-            self.page.pop_dialog()
+
+            await self.on_back()
         except Exception as ex:
             print(f"❌ Ошибка валидации: {ex}")
