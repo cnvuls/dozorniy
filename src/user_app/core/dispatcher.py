@@ -3,12 +3,13 @@
 import json
 from typing import Callable, Dict, List, Optional, Type
 
+from pydantic import ValidationError
+
 from core.events import EventBus, ReceiveMessage, SendMessage
 from core.middleware.base import RequestMiddleware, ResponseMiddleware
 from core.requests.base import RequestBase
 from core.responses.base import ResponseBase
 from core.responses.bus import ResponseBus
-from pydantic import ValidationError
 
 
 class ResponseDispatcher:
@@ -42,7 +43,6 @@ class ResponseDispatcher:
 
             def make_step(current_mw, next_step):
                 async def step(d: dict):
-                    print(d)
                     return await current_mw(d, next_step)
 
                 return step
@@ -57,8 +57,8 @@ class ResponseDispatcher:
         try:
             command_obj = model_cls.model_validate(data)
             await self._respbus.execute(command_obj)
-        except ValidationError as e:
-            print(e)
+        except ValidationError as _:
+            pass
 
 
 class RequestDispatcher:
@@ -83,7 +83,6 @@ class RequestDispatcher:
 
             def create_step(m, n):
                 async def step(d: dict) -> None:
-                    print(d)
                     await m(d, n)
 
                 return step

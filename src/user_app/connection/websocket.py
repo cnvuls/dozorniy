@@ -5,8 +5,15 @@ import logging
 from typing import Optional
 
 import websockets
+
 from connection.abstracts import ConnectionBase
-from core.events import EventBus, ReceiveMessage, SendMessage, ConnectedEvent, DisconnectedEvent
+from core.events import (
+    ConnectedEvent,
+    DisconnectedEvent,
+    EventBus,
+    ReceiveMessage,
+    SendMessage,
+)
 
 
 class WebsocketConnection(ConnectionBase):
@@ -35,7 +42,6 @@ class WebsocketConnection(ConnectionBase):
         await self.socket.send(event.text)
 
     async def receive_message(self, data: str) -> None:
-        print("_______________________________")
         await self.bus.publish(ReceiveMessage(text=data))
 
     async def main_loop(self) -> None:
