@@ -9,7 +9,7 @@ from core.events import EventBus
 from core.loader import autodiscover_features
 from core.registry import FeatureRegistry
 from core.responses.bus import ResponseBus
-from features.screen.monitor import ScreenMonitor
+from features.screen.handler import ScreenMonitor
 
 
 class ClientApp:
@@ -38,8 +38,6 @@ class ClientApp:
                 self.resp_bus.register(meta.response_model, handler_instance)
             except Exception as e:
                 print(f"Error registering {meta.command_key}: {e}")
-
-        self.screen = ScreenMonitor(self.bus, interval=config.SCREEN_INTERVAL)
 
     async def run(self) -> None:
         self._init_layers()

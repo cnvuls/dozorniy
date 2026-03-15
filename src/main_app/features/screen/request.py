@@ -11,5 +11,6 @@ class FrameTimeOption(Enum):
 
 
 class ScreenRequest(RequestBase):
-    window: tuple[int, int] = (120, 80)
-    frame_time: FrameTimeOption = FrameTimeOption.SLOW
+    type: str = "screen_rate"
+    window_fullscreen: bool = True
+    frame_time: FrameTimeOption = FrameTimeOption.FAST

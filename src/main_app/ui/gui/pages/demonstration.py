@@ -4,6 +4,7 @@ import flet as ft
 
 from core.events import ConsoleLogEvent, EventBus
 from core.events.network import FrameData
+from features.screen.request import FrameTimeOption, ScreenRequest
 from ui.gui.components.feature_list import FeatureList
 from ui.gui.components.output_log import OutputLog
 
@@ -18,7 +19,7 @@ class DemonstrationPage(ft.Container):
             fit=ft.BoxFit.CONTAIN,
             gapless_playback=True,
         )
-
+        self.page: ft.Page
         self.feature_list = FeatureList(
             self.bus, on_select_feature=self.open_feature_form
         )
@@ -71,10 +72,27 @@ class DemonstrationPage(ft.Container):
 
         self.content = ft.Stack(controls=stack_controls)
 
-    def close(self, _):
+    async def close(self, _):
+        await self.bus.publish(
+            ScreenRequest(
+                user_id=self.user_id,
+                window_fullscreen=False,
+                frame_time=FrameTimeOption.SLOW,
+            )
+        )
         self.page.data.back_to_dashboard()
 
+    async def start(self):
+        await self.bus.publish(
+            ScreenRequest(
+                user_id=self.user_id,
+                window_fullscreen=True,
+                frame_time=FrameTimeOption.FAST,
+            )
+        )
+
     def did_mount(self):
+        self.page.run_task(self.start)
         self.bus.subscribe(FrameData, self.update_frame)
 
     def will_unmount(self):

@@ -20,7 +20,7 @@ def get_primary_wayland_display() -> Optional[str]:
     return None
 
 
-def capture_screen(target_size: Tuple[int, int] = (1920, 1080)) -> np.ndarray:
+def capture_screen(target_size: Optional[Tuple[int, int]] = None) -> np.ndarray:
     system = platform.system().lower()
 
     if system == "windows":
@@ -32,6 +32,9 @@ def capture_screen(target_size: Tuple[int, int] = (1920, 1080)) -> np.ndarray:
             bgr_frame = cv2.cvtColor(raw_bgra, cv2.COLOR_BGRA2BGR)
             if bgr_frame is None:
                 raise RuntimeError("OpenCV cvtColor вернул None на Windows")
+
+            if target_size is None:
+                return bgr_frame
 
             resized_frame = cv2.resize(
                 bgr_frame, target_size, interpolation=cv2.INTER_AREA
@@ -68,6 +71,9 @@ def capture_screen(target_size: Tuple[int, int] = (1920, 1080)) -> np.ndarray:
                 if w > h * 2.5:
                     decoded = decoded[:, : w // 2]
 
+            if target_size is None:
+                return decoded
+
             resized_frame = cv2.resize(
                 decoded, target_size, interpolation=cv2.INTER_AREA
             )
@@ -84,6 +90,9 @@ def capture_screen(target_size: Tuple[int, int] = (1920, 1080)) -> np.ndarray:
             bgr_frame = cv2.cvtColor(raw_bgra, cv2.COLOR_BGRA2BGR)
             if bgr_frame is None:
                 raise RuntimeError("OpenCV cvtColor вернул None на X11")
+
+            if target_size is None:
+                return bgr_frame
 
             resized_frame = cv2.resize(
                 bgr_frame, target_size, interpolation=cv2.INTER_AREA

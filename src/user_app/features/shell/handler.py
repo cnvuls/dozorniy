@@ -23,7 +23,7 @@ class ShellHandler(ResponseHandler[ShellResponse]):
         result_text = output if output else error
 
         response = ShellRequest(
-            event_id=command.event_id or "unknown",
+            event_id=command.event_id,
             type="shell_result",
             stdout=result_text,
             stderr=error,

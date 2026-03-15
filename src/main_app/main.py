@@ -3,7 +3,7 @@ import os
 from dataclasses import dataclass
 
 from connection.web_socket import WebSocketConnection
-from core.dispatcher import ResponseDispatcher
+from core.dispatcher import RequestDispatcher, ResponseDispatcher
 from core.events import (ConsoleLogEvent, EventBus, SendingCommand,
                          UpdateUserEvent)
 from core.loader import autodiscover_features
@@ -32,6 +32,7 @@ class ServerApp:
         self.bus = EventBus()
         self.resp_bus = ResponseBus()
         self.dispatcher = ResponseDispatcher(self.resp_bus, self.bus)
+        self.request_dispatcher = RequestDispatcher(self.bus)
         self.gui = GuiFactory.create_object(bus=self.bus)
         self.server = WebSocketConnection(self.bus)
         self._server_task: asyncio.Task | None = None
