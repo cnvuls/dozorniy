@@ -1,13 +1,31 @@
 import asyncio
+import socket
 from typing import Dict
 
 import websockets
+
 # from utils.get_ipadress import getIpAddress # <--- Убрали, чтобы не висло
 from websockets import serve
 
 from connection.abstracts import ConnectionBase
-from core.events import (EventBus, IncomingRawMessage, InfoLogEvent,
-                         SendingCommand, UpdateUserEvent)
+from core.events import (
+    EventBus,
+    IncomingRawMessage,
+    InfoLogEvent,
+    SendingCommand,
+    UpdateUserEvent,
+)
+
+
+def get_local_ip() -> str:
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception:
+        return "127.0.0.1"
 
 
 class WebSocketConnection(ConnectionBase):
@@ -69,7 +87,8 @@ class WebSocketConnection(ConnectionBase):
 
         await self.bus.publish(
             InfoLogEvent(
-                text=f"Server is activated on ws://127.0.0.1:{port}", source="websocket"
+                text=f"Server is activated on ws://{get_local_ip()}:{port}",
+                source="websocket",
             )
         )
 
