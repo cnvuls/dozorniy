@@ -4,13 +4,11 @@ from dataclasses import dataclass
 
 from connection.web_socket import WebSocketConnection
 from core.dispatcher import RequestDispatcher, ResponseDispatcher
-from core.events import (ConsoleLogEvent, EventBus, SendingCommand,
-                         UpdateUserEvent)
+from core.events import ConsoleLogEvent, EventBus
 from core.loader import autodiscover_features
 from core.registry import FeatureRegistry
 from core.responses.responsebus import ResponseBus
 from core.services.feature_service import FeatureService
-from features.shell.request import ShellRequest
 from ui.abstracts.base import ServerConnection
 from ui.gui_factory import GuiFactory
 
@@ -82,7 +80,6 @@ class ServerApp:
                     self._server_task = None
 
     def _setup_server_subscriptions(self):
-        """Подписки самого сервера (логирование, подключение юзеров)"""
         self.bus.subscribe(ServerConnection, self._handle_server_toggle)
 
     async def run(self):
