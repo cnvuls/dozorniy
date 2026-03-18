@@ -1,5 +1,3 @@
-from enum import IntEnum
-
 import flet as ft
 
 from core.events import EventBus
@@ -11,7 +9,7 @@ from ui.gui.components.output_log import OutputLog
 from ui.gui.components.user_list import ListUsers
 from ui.gui.pages.dashboard import DashboardPage
 from ui.gui.pages.logs import LogsPage
-from ui.gui.pages.settings import SettingsPage
+from ui.gui.utils.catppuccin import get_catppuccin_theme
 
 
 class DozorniyApp(UiAbstract):
@@ -27,7 +25,6 @@ class DozorniyApp(UiAbstract):
     async def route_change(self, e: ft.RouteChangeEvent):
         if not self.page:
             return
-        self.page.views.clear()
         new_content: ft.Container
         if e.route == "/":
             new_content = DashboardPage(
@@ -36,14 +33,13 @@ class DozorniyApp(UiAbstract):
         elif e.route == "/logs":
             new_content = LogsPage(list_log=self.list_log)
         else:
-            new_content = ft.Text("404 Not Found")
-
+            return
         layout = ft.Row(
             controls=[self.sidebar, self.divider, new_content],
             expand=True,
             spacing=0,
         )
-
+        self.page.views.clear()
         self.page.views.append(ft.View(route=self.page.route, controls=[layout]))
         self.page.update()
 
@@ -74,7 +70,7 @@ class DozorniyApp(UiAbstract):
         if e.data is None:
             return
 
-        routes = ["/", "/logs", "/settings"]
+        routes = ["/", "/logs"]
         self.page.go(routes[int(e.data)])
 
     async def _toggle_switch(self, e):
@@ -86,7 +82,7 @@ class DozorniyApp(UiAbstract):
         self.page.on_route_change = self.route_change
         self.page.title = "Dozorniy RMM"
         self.page.theme = ft.Theme(
-            color_scheme_seed="green",
+            color_scheme=get_catppuccin_theme(),
             page_transitions=ft.PageTransitionsTheme(
                 linux=ft.PageTransitionTheme.OPEN_UPWARDS
             ),
@@ -109,7 +105,6 @@ class DozorniyApp(UiAbstract):
             destinations=[
                 ft.NavigationRailDestination(icon=ft.Icons.DASHBOARD, label="Монитор"),
                 ft.NavigationRailDestination(icon=ft.Icons.MONITOR_HEART, label="Логи"),
-                ft.NavigationRailDestination(icon=ft.Icons.SETTINGS, label="Опции"),
             ],
             on_change=self.navigate,
             trailing=self.server_switch,

@@ -22,7 +22,6 @@ class ScreenMonitor(ResponseHandler):
         self.full = False
 
     async def handle(self, command: ScreenResponse):
-        print(command)
         self.interval = command.frame_time
         self.full = command.window_fullscreen
         self._interrupt_event.set()

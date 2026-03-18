@@ -1,6 +1,6 @@
 import os
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Config(BaseSettings):
@@ -10,10 +10,7 @@ class Config(BaseSettings):
     TELEMETRY_INTERVAL: int = 1
     SCREEN_INTERVAL: int = 10
     RECONNECT_DELAY: float = 3.0
-
-    class Config:
-        env_prefix = "DOZOR_"
-        case_sensitive = True
+    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
 
 config = Config()

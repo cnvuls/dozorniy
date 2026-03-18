@@ -5,6 +5,7 @@ description = "Dozorniy Server (Main App)"
 requires-python = ">=3.12"
 dependencies = [
     "aiofiles>=25.1.0",
+    "catppuccin>=2.5.0",
     "flet>=0.82.0",
     "pydantic>=2.12.5",
     "pydantic-settings>=2.13.1",
