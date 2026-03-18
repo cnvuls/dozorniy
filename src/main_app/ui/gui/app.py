@@ -22,32 +22,35 @@ class DozorniyApp(UiAbstract):
 
         self.content_holder = ft.Container(expand=True, padding=20)
 
-    async def route_change(self, e: ft.RouteChangeEvent):
+    async def route_change(self, e: ft.RouteChangeEvent | None = None):
+        route = e.route if e else self.page.route
         if not self.page:
             return
         new_content: ft.Container
-        if e.route == "/":
+        if route == "/":
             new_content = DashboardPage(
                 user_list=self.user_list_view, output_log=self.log_window
             )
-        elif e.route == "/logs":
+        elif route == "/logs":
             new_content = LogsPage(list_log=self.list_log)
         else:
             return
-        layout = ft.Row(
-            controls=[self.sidebar, self.divider, new_content],
-            expand=True,
-            spacing=0,
-        )
+        layout = ft.Row(controls=[self.sidebar, new_content], expand=True, spacing=0)
         self.page.views.clear()
-        self.page.views.append(ft.View(route=self.page.route, controls=[layout]))
+        self.page.views.append(
+            ft.View(
+                route=route,
+                controls=[layout],
+                bgcolor=ft.Colors.SURFACE_DIM,
+                spacing=0,
+            )
+        )
         self.page.update()
 
     def back_to_dashboard(self):
         self.user_list_view.start_screen_updates()
 
         self.sidebar.visible = True
-        self.divider.visible = True
 
         if self.page:
             self.page.update()
@@ -56,7 +59,6 @@ class DozorniyApp(UiAbstract):
         self.user_list_view.stop_screen_updates()
 
         self.sidebar.visible = not show
-        self.divider.visible = not show
         if control:
             self.content_holder.content = control
 
@@ -78,8 +80,8 @@ class DozorniyApp(UiAbstract):
 
     async def main(self, page: ft.Page):
         self.page = page
-        self.page.data = self
         self.page.on_route_change = self.route_change
+        self.page.data = self
         self.page.title = "Dozorniy RMM"
         self.page.theme = ft.Theme(
             color_scheme=get_catppuccin_theme(),
@@ -87,14 +89,13 @@ class DozorniyApp(UiAbstract):
                 linux=ft.PageTransitionTheme.OPEN_UPWARDS
             ),
         )
-
+        self.page.bgcolor = ft.Colors.SURFACE_DIM
         self.page.padding = 0
         self.server_switch = ft.Switch(
             value=False,
             active_color=ft.Colors.PRIMARY,
             on_change=self._toggle_switch,
         )
-        self.divider = ft.VerticalDivider(width=1)
         self.content_holder.content = DashboardPage(
             user_list=self.user_list_view, output_log=self.log_window
         )
@@ -110,13 +111,10 @@ class DozorniyApp(UiAbstract):
             trailing=self.server_switch,
         )
 
-        layout = ft.Row(
-            controls=[self.sidebar, self.divider, self.content_holder],
-            expand=True,
-            spacing=0,
-        )
-
-        self.page.add(layout)
+        await self.route_change()
 
     async def main_loop(self):
-        await ft.app_async(main=self.main, assets_dir="gui/flet/assets")
+        await ft.app_async(
+            main=self.main,
+            assets_dir="gui/flet/assets",
+        )

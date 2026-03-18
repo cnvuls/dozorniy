@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import TypedDict
 
 import flet as ft
+
 from core.events import (
     BaseLogEvent,
     ConsoleLogEvent,

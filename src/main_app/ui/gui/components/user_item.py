@@ -13,9 +13,7 @@ from ui.gui.pages.featuremenu import CommandDialog
 class UserItem(ft.Container):
     def __init__(self, user_id: int, name: str, bus: EventBus):
         super().__init__(
-            padding=10,
-            border_radius=8,
-            border=ft.border.all(1, ft.Colors.PRIMARY),
+            padding=10, border_radius=30, bgcolor=ft.Colors.SURFACE_CONTAINER
         )
         self.user_id = user_id
         self.ink = True

@@ -8,6 +8,7 @@ from core.events.other import TelemetryUpdateEvent
 from ui.gui.components.user_item import UserItem
 
 
+# Сделать прогрузку
 class ListUsers(ft.ListView):
     def __init__(self, bus: EventBus):
         super().__init__(expand=True, spacing=10, padding=10)
