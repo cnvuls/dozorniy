@@ -3,7 +3,10 @@
 from dataclasses import dataclass
 from typing import Any, List, Optional, Tuple, Type
 
+from click import Option
 from pydantic import BaseModel
+
+from core.requests.base import RequestBase
 
 
 @dataclass
@@ -59,3 +62,10 @@ class FeatureRegistry:
     @classmethod
     def get_features(cls) -> List[FeatureMeta]:
         return cls._features
+
+    @classmethod
+    async def get_by_key(cls, key: str) -> Optional[FeatureMeta]:
+        for i in cls._features:
+            if i.command_key == key:
+                return i
+        return None

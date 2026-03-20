@@ -2,10 +2,13 @@ import base64
 from turtle import bgcolor
 
 import flet as ft
+from click.core import F
 from pydantic import Base64Bytes
 
 from core.events import EventBus
 from core.events.other import TelemetryUpdateEvent
+from core.registry import FeatureMeta, FeatureRegistry
+from features.message.request import MessageRequest
 from ui.gui.pages.demonstration import DemonstrationPage
 from ui.gui.pages.featuremenu import CommandDialog
 
@@ -65,9 +68,23 @@ class UserItem(ft.Container):
                         ),
                     ]
                 ),
-                ft.IconButton(ft.Icons.MORE_VERT, on_click=self.click_menu),
+                ft.Row(
+                    [
+                        ft.IconButton(
+                            ft.Icons.MESSAGE,
+                            on_click=self.message,
+                        ),
+                        ft.IconButton(ft.Icons.MORE_VERT, on_click=self.click_menu),
+                    ]
+                ),
             ],
         )
+
+    async def message(self, _):
+        meta = await FeatureRegistry.get_by_key("message")
+        if meta:
+            dialog = CommandDialog(self.user_id, self.bus, meta)
+            self.page.show_dialog(dialog)
 
     def update_image(self, imgbase64: bytes):
         b64_str = base64.b64encode(imgbase64).decode("utf-8")
