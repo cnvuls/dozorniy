@@ -9,10 +9,10 @@ from pydantic import BaseModel
 @dataclass
 class FeatureMeta:
     command_key: str
-    response_model: Type[Any]
     handler_cls: Type[Any]
     name: str
     version: str
+    response_model: Optional[Type[Any]] = None
     request_model: Optional[Type[Any]] = None
     args_model: Optional[Type[BaseModel]] = None
     is_hidden: bool = False
@@ -25,10 +25,10 @@ class FeatureRegistry:
     def register(
         cls,
         command_key: str,
-        response_model: Type[Any],
         # TODO: сделать нормальную типизацию и сделать отдельные feature
         name: str,
         version: str,
+        response_model: Optional[Type[Any]] = None,
         request_model: Optional[Type[Any]] = None,
         args_model: Optional[Type[BaseModel]] = None,
         is_hidden: bool = False,

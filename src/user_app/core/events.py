@@ -55,7 +55,6 @@ class EventBus:
         handlers = self._cache.get(event_type)
         if handlers is None:
             handlers = []
-
             for cls in event_type.__mro__:
                 if cls in self._subscribers:
                     handlers.extend(self._subscribers[cls])
