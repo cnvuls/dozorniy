@@ -13,6 +13,7 @@ class FeatureList(ft.Container):
         self.bus = bus
         self.width = 300
         self.height = 400
+        self.page: ft.Page
         self.on_select_feature = on_select_feature
 
         self.command_list = ft.ListView(expand=True, spacing=5)
@@ -33,17 +34,16 @@ class FeatureList(ft.Container):
     async def render_features(self, event: ResponseFeatureList):
         self.command_list.controls.clear()
         for meta in event.content:
-
-            async def click_handler(e, m=meta):
-                await self._handle_click(m)
-
             self.command_list.controls.append(
                 ft.ListTile(
                     title=ft.Text(meta.name),
                     subtitle=ft.Text(f"{meta.version}, {meta.command_key}"),
-                    on_click=click_handler,
+                    on_click=lambda _, m=meta: self.page.run_task(
+                        self._handle_click, m
+                    ),
                 )
             )
+
         if self.page:
             self.update()
 

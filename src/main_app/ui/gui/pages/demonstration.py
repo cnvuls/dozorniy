@@ -19,7 +19,6 @@ class DemonstrationPage(ft.Container):
             fit=ft.BoxFit.CONTAIN,
             gapless_playback=True,
         )
-        self.page: ft.Page
         self.feature_list = FeatureList(
             self.bus, on_select_feature=self.open_feature_form
         )
