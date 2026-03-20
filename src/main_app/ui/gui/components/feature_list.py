@@ -1,4 +1,7 @@
+import asyncio
+
 import flet as ft
+
 from core.events import EventBus
 from core.events.other import RequestFeatureList, ResponseFeatureList
 from core.registry import FeatureMeta
@@ -7,7 +10,6 @@ from core.registry import FeatureMeta
 class FeatureList(ft.Container):
     def __init__(self, bus: EventBus, on_select_feature):
         super().__init__()
-        self.page: ft.Page
         self.bus = bus
         self.width = 300
         self.height = 400
@@ -20,7 +22,7 @@ class FeatureList(ft.Container):
 
     def did_mount(self):
         self.bus.subscribe(ResponseFeatureList, self.render_features)
-        self.page.run_task(self._initial_load)
+        asyncio.create_task(self._initial_load())
 
     def will_unmount(self):
         self.bus.unsubscribe(ResponseFeatureList, self.render_features)
@@ -31,17 +33,19 @@ class FeatureList(ft.Container):
     async def render_features(self, event: ResponseFeatureList):
         self.command_list.controls.clear()
         for meta in event.content:
+
+            async def click_handler(e, m=meta):
+                await self._handle_click(m)
+
             self.command_list.controls.append(
                 ft.ListTile(
                     title=ft.Text(meta.name),
                     subtitle=ft.Text(f"{meta.version}, {meta.command_key}"),
-                    on_click=lambda e, m=meta: self.page.run_task(
-                        self._handle_click, m
-                    ),
+                    on_click=click_handler,
                 )
             )
-
-        self.update()
+        if self.page:
+            self.update()
 
     async def _handle_click(self, meta: FeatureMeta):
         if not meta.args_model:

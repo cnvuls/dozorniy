@@ -3,11 +3,12 @@ import flet as ft
 from core.events import EventBus
 from ui.abstracts import UiAbstract
 from ui.abstracts.base import ServerConnection
-from ui.gui.components import output_log
+from ui.gui.components import output_log, user_list
 from ui.gui.components.logs_list import ListLog
 from ui.gui.components.output_log import OutputLog
 from ui.gui.components.user_list import ListUsers
 from ui.gui.pages.dashboard import DashboardPage
+from ui.gui.pages.demonstration import DemonstrationPage
 from ui.gui.pages.logs import LogsPage
 from ui.gui.utils.catppuccin import get_catppuccin_theme
 
@@ -16,7 +17,6 @@ class DozorniyApp(UiAbstract):
     def __init__(self, bus: EventBus):
         self.page: ft.Page
         self.bus: EventBus = bus
-        self.user_list_view = ListUsers(bus=self.bus)
         self.log_window = OutputLog(bus=self.bus)
         self.list_log = ListLog(bus=self.bus)
 
@@ -24,18 +24,27 @@ class DozorniyApp(UiAbstract):
 
     async def route_change(self, e: ft.RouteChangeEvent | None = None):
         route = e.route if e else self.page.route
-        if not self.page:
-            return
+        fullscreen = False
+        print(route)
         new_content: ft.Container
         if route == "/":
-            new_content = DashboardPage(
-                user_list=self.user_list_view, output_log=self.log_window
-            )
+            new_content = DashboardPage(output_log=self.log_window, bus=self.bus)
         elif route == "/logs":
             new_content = LogsPage(list_log=self.list_log)
+        elif route.startswith("/demo"):
+            print(route.split("_"))
+            new_content = DemonstrationPage(
+                user_id=int(route.split("_")[1]), bus=self.bus
+            )
+            fullscreen = True
         else:
             return
-        layout = ft.Row(controls=[self.sidebar, new_content], expand=True, spacing=0)
+        if fullscreen:
+            layout = ft.Row(controls=[new_content], expand=True, spacing=0)
+        else:
+            layout = ft.Row(
+                controls=[self.sidebar, new_content], expand=True, spacing=0
+            )
         self.page.views.clear()
         self.page.views.append(
             ft.View(
@@ -46,24 +55,6 @@ class DozorniyApp(UiAbstract):
             )
         )
         self.page.update()
-
-    def back_to_dashboard(self):
-        self.user_list_view.start_screen_updates()
-
-        self.sidebar.visible = True
-
-        if self.page:
-            self.page.update()
-
-    def toggle_fullscreen(self, show: bool, control: ft.Control):
-        self.user_list_view.stop_screen_updates()
-
-        self.sidebar.visible = not show
-        if control:
-            self.content_holder.content = control
-
-        if self.page:
-            self.page.update()
 
     async def navigate(self, e):
         if self.page is None:
@@ -95,9 +86,6 @@ class DozorniyApp(UiAbstract):
             value=False,
             active_color=ft.Colors.PRIMARY,
             on_change=self._toggle_switch,
-        )
-        self.content_holder.content = DashboardPage(
-            user_list=self.user_list_view, output_log=self.log_window
         )
         self.sidebar = ft.NavigationRail(
             selected_index=0,

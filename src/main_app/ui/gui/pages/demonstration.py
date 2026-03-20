@@ -80,7 +80,7 @@ class DemonstrationPage(ft.Container):
                 frame_time=FrameTimeOption.SLOW,
             )
         )
-        self.page.data.back_to_dashboard()
+        self.page.go("/")
 
     async def start(self):
         await self.bus.publish(

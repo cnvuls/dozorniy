@@ -15,6 +15,7 @@ from core.events import (
     SendingCommand,
     UpdateUserEvent,
 )
+from core.events.base import AbstractEvent
 
 
 def get_local_ip() -> str:
@@ -28,21 +29,26 @@ def get_local_ip() -> str:
         return "127.0.0.1"
 
 
+class GetInitialUsersEvent(AbstractEvent):
+    pass
+
+
 class WebSocketConnection(ConnectionBase):
     def __init__(self, bus: EventBus) -> None:
-        self._clients: Dict[int, websockets.ServerConnection] = {}
+        self._clients: Dict[int, dict] = {}
         self.bus = bus
 
         self.bus.subscribe(SendingCommand, self.send_message)
 
     async def send_message(self, event: SendingCommand) -> None:
-        if event.user_id in self._clients:
-            await self._clients[event.user_id].send(event.text)
+        client_data = self._clients.get(event.user_id)
+        if client_data:
+            await client_data["socket"].send(event.text)
 
     async def register_client(self, socket: websockets.ServerConnection) -> int:
         user_name = str(await socket.recv())
         user_id = len(self._clients) + 1
-        self._clients[user_id] = socket
+        self._clients[user_id] = {"socket": socket, "name": user_name}
         await self.bus.publish(
             UpdateUserEvent(action="connect", user_id=user_id, user_name=user_name)
         )
@@ -51,7 +57,7 @@ class WebSocketConnection(ConnectionBase):
     async def broadcast_message(self, text: str) -> None:
         if self._clients:
             await asyncio.gather(
-                *[client.send(text) for _, client in self._clients.items()],
+                *[data["socket"].send(text) for _, data in self._clients.values()],
                 return_exceptions=True,
             )
 
@@ -64,8 +70,8 @@ class WebSocketConnection(ConnectionBase):
 
     async def stop(self):
         tasks = [
-            sock.close(code=1001, reason="Server shutdown")
-            for sock in self._clients.values()
+            data["socket"].close(code=1001, reason="Server shutdown")
+            for data in self._clients.values()
         ]
         await asyncio.gather(*tasks, return_exceptions=True)
 

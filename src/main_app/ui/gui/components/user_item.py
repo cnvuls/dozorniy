@@ -20,7 +20,7 @@ class UserItem(ft.Container):
         self.bus = bus
         self._init_state_controls(name)
         self.on_click = self.callback
-
+        self.page: ft.Page
         self.content = ft.Column(
             tight=True,
             controls=[
@@ -29,8 +29,7 @@ class UserItem(ft.Container):
         )
 
     def callback(self, _):
-        demo = DemonstrationPage(bus=self.bus, user_id=self.user_id)
-        self.page.data.toggle_fullscreen(True, demo)
+        self.page.go(f"/demo_{self.user_id}")
 
     def _init_state_controls(self, name: str):
         self.image_control = ft.Image(
