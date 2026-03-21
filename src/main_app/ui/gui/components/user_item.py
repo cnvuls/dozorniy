@@ -89,7 +89,8 @@ class UserItem(ft.Container):
     def update_image(self, imgbase64: bytes):
         b64_str = base64.b64encode(imgbase64).decode("utf-8")
         self.image_control.src = f"data:image/jpeg;base64,{b64_str}"
-        self.image_control.update()
+        if self.image_control.page:
+            self.image_control.update()
 
     def click_menu(self, _):
         dialog = CommandDialog(self.user_id, self.bus)

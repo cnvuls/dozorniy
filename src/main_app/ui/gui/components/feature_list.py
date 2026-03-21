@@ -13,13 +13,10 @@ class FeatureList(ft.Container):
         self.bus = bus
         self.width = 300
         self.height = 400
-        self.page: ft.Page
         self.on_select_feature = on_select_feature
 
         self.command_list = ft.ListView(expand=True, spacing=5)
         self.content = self.command_list
-
-        self.bus.subscribe(ResponseFeatureList, self.render_features)
 
     def did_mount(self):
         self.bus.subscribe(ResponseFeatureList, self.render_features)
@@ -32,6 +29,9 @@ class FeatureList(ft.Container):
         await self.bus.publish(RequestFeatureList())
 
     async def render_features(self, event: ResponseFeatureList):
+        if not self.page:
+            return
+        
         self.command_list.controls.clear()
         for meta in event.content:
             self.command_list.controls.append(
@@ -44,8 +44,7 @@ class FeatureList(ft.Container):
                 )
             )
 
-        if self.page:
-            self.update()
+        self.update()
 
     async def _handle_click(self, meta: FeatureMeta):
         if not meta.args_model:
