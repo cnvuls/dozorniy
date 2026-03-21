@@ -14,7 +14,7 @@ Compression=lzma
 SolidCompression=yes
 
 [Files]
-Source: "dist\user_app.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\user_app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "run_user.bat"; DestDir: "{app}"; Flags: ignoreversion
 Source: "silent_run.vbs"; DestDir: "{app}"; Flags: ignoreversion
 
