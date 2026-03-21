@@ -16,7 +16,7 @@ SolidCompression=yes
 [Files]
 Source: "main.dist\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "run_user.bat"; DestDir: "{app}"; Flags: ignoreversion
-Source: "nssm.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "silent_run.vbs"; DestDir: "{app}"; Flags: ignoreversion
 
 [Code]
 var
@@ -24,13 +24,10 @@ var
 
 procedure InitializeWizard;
 begin
-  ConfigPage := CreateInputQueryPage(wpWelcome,
-    'Настройка агента', 'Введите данные для подключения',
-    'Эти данные будут использоваться агентом для связи с сервером.');
-  ConfigPage.Add('Имя агента:', False);
-  ConfigPage.Add('IP сервера:', False);
+  ConfigPage := CreateInputQueryPage(wpWelcome, 'Настройка', 'Введите данные', '');
+  ConfigPage.Add('Имя:', False);
+  ConfigPage.Add('IP:', False);
   ConfigPage.Add('Порт:', False);
-  
   ConfigPage.Values[0] := 'Agent_1';
   ConfigPage.Values[1] := '127.0.0.1';
   ConfigPage.Values[2] := '8888';
@@ -51,10 +48,8 @@ begin
 end;
 
 [Run]
-Filename: "{app}\nssm.exe"; Parameters: "install DozorniyAgent ""{app}\run_user.bat"""; Flags: runhidden
-Filename: "{app}\nssm.exe"; Parameters: "set DozorniyAgent AppDirectory ""{app}"""; Flags: runhidden
-Filename: "{app}\nssm.exe"; Parameters: "start DozorniyAgent"; Flags: runhidden
+Filename: "schtasks"; Parameters: "/create /tn ""DozorniyAgent"" /tr ""wscript.exe '{app}\silent_run.vbs' '{app}\run_user.bat'"" /sc onlogon /rl highest /f"; Flags: runhidden
+Filename: "schtasks"; Parameters: "/run /tn ""DozorniyAgent"""; Flags: runhidden
 
 [UninstallRun]
-Filename: "{app}\nssm.exe"; Parameters: "stop DozorniyAgent"; Flags: runhidden
-Filename: "{app}\nssm.exe"; Parameters: "remove DozorniyAgent confirm"; Flags: runhidden
+Filename: "schtasks"; Parameters: "/delete /tn ""DozorniyAgent"" /f"; Flags: runhidden
