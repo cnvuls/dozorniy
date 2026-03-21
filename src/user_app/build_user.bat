@@ -1,2 +1,2 @@
 @echo off
-uv run python -m nuitka --standalone --onefile --windows-console-mode=disable --include-package=websockets --include-package=pydantic --include-package=pydantic_settings --include-package=features --include-package=connection --include-package=core --include-package-data=flet --output-filename=user_app.exe main.py
+uv run pyinstaller --noconfirm --onefile --windowed --name "user_app" --add-data "features;features" --add-data "core;core" --add-data "connection;connection" --collect-all "websockets" --collect-all "pydantic" --collect-all "pydantic_settings" main.py
