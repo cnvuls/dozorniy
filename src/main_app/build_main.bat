@@ -8,6 +8,7 @@ uv add flet click websockets
 
 echo [BUILDING] Starting PyInstaller for Server...
 :: Добавляем --collect-all "flet" и --collect-submodules "flet"
+:: И явно просим PyInstaller собрать все данные flet
 uv run pyinstaller --noconfirm --onedir --name "main_app" ^
 --add-data "features;features" ^
 --add-data "ui;ui" ^
@@ -16,6 +17,7 @@ uv run pyinstaller --noconfirm --onedir --name "main_app" ^
 --collect-all "flet" ^
 --collect-all "websockets" ^
 --collect-all "click" ^
+--collect-data "flet" ^
 --hidden-import="flet" ^
 --hidden-import="click" ^
 main.py
