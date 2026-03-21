@@ -10,7 +10,11 @@ class Config(BaseSettings):
     TELEMETRY_INTERVAL: int = 1
     SCREEN_INTERVAL: int = 10
     RECONNECT_DELAY: float = 3.0
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    VERSION: str = "0.0.0"
+
+    model_config = SettingsConfigDict(
+        env_file=".env", env_file_encoding="utf-8", extra="ignore"
+    )
 
 
 config = Config()
