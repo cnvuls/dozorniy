@@ -1,16 +1,15 @@
 import importlib
-import os
 import pkgutil
 
 def autodiscover_features(base_package: str = "features"):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    user_app_root = os.path.dirname(current_dir)
-    features_path = os.path.join(user_app_root, "features")
-
-    if not os.path.exists(features_path):
+    try:
+        package = importlib.import_module(base_package)
+        if not hasattr(package, "__path__"):
+            return
+    except ImportError:
         return
 
-    for _, name, is_pkg in pkgutil.iter_modules([features_path]):
+    for _, name, is_pkg in pkgutil.iter_modules(package.__path__):
         if is_pkg:
             module_name = f"{base_package}.{name}.handler"
             try:
