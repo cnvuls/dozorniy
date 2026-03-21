@@ -16,7 +16,7 @@ for /f "delims=" %%v in ('powershell -command "$p = Invoke-RestMethod 'https://a
 
 if "%REMOTE_VER%"=="" goto START_APP
 
-echo [SYSTEM] Local: %LOCAL_VER% | Remote: %REMOTE_VER%
+echo [SYSTEM] Local: %LOCAL_VER% / Remote: %REMOTE_VER%
 
 if not "%LOCAL_VER%"=="%REMOTE_VER%" (
     echo [UPDATE] New server version %REMOTE_VER% found!
