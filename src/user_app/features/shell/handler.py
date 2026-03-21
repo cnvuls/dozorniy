@@ -18,8 +18,17 @@ class ShellHandler(ResponseHandler[ShellResponse]):
         )
 
         stdout, stderr = await process.communicate()
-        output = stdout.decode(errors="replace").strip()
-        error = stderr.decode(errors="replace").strip()
+        
+        def decode_output(raw_bytes: bytes) -> str:
+            for enc in ("utf-8", "cp866", "cp1251"):
+                try:
+                    return raw_bytes.decode(enc)
+                except UnicodeDecodeError:
+                    pass
+            return raw_bytes.decode("utf-8", errors="replace")
+            
+        output = decode_output(stdout).strip()
+        error = decode_output(stderr).strip()
         result_text = output if output else error
 
         response = ShellRequest(
