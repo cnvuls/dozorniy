@@ -15,7 +15,7 @@ set "VERSION_FILE=version.txt"
 echo [LAUNCHER] Starting Dozorniy Server...
 
 :CHECK_CONFIG
-set "LOCAL_VER=0.0.0"
+set "LOCAL_VER=1.0.0"
 if exist "%VERSION_FILE%" (
     set /p LOCAL_VER=<"%VERSION_FILE%"
 )

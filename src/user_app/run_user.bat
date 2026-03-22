@@ -16,10 +16,10 @@ echo [LAUNCHER] Starting Dozorniy Agent...
 
 :CHECK_CONFIG
 if not exist "%ENV_FILE%" (
-    echo VERSION=0.0.0 > "%ENV_FILE%"
-    set "LOCAL_VER=0.0.0"
+    echo VERSION=1.0.0 > "%ENV_FILE%"
+    set "LOCAL_VER=1.0.0"
 ) else (
-    set "LOCAL_VER=0.0.0"
+    set "LOCAL_VER=1.0.0"
     for /f "tokens=2 delims==" %%a in ('findstr /I "VERSION=" "%ENV_FILE%"') do (
         set "val=%%a"
         set "LOCAL_VER=!val: =!"
