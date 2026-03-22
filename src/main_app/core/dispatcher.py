@@ -20,7 +20,6 @@ class ResponseDispatcher:
         self._bus.subscribe(IncomingRawMessage, self.dispatch)
 
     def bind(self, msg_type: str, resp_cls: Type[ResponseBase]) -> None:
-        print(resp_cls, msg_type)
         self._type_map[msg_type] = resp_cls
 
     def _parse_payload(self, text: str) -> Optional[Dict[str, Any]]:
@@ -77,8 +76,10 @@ class RequestDispatcher:
         self._event_bus: EventBus = bus
         self._event_bus.subscribe(RequestBase, self.send)
         self._middlewares: list[ResponseMiddleware] = []
+
     def add_middleware(self, middleware: Any):
         self._middlewares.append(middleware)
+
     async def send(self, request: RequestBase) -> None:
         data: Dict[str, Any] = request.model_dump(mode="json")
 
@@ -104,6 +105,7 @@ class RequestDispatcher:
         self, request: RequestBase, data: Dict[str, Any]
     ) -> None:
         import json
+
         print(f"DEBUG: [DISPATCHER] Final send to EventBus for user {request.user_id}")
 
         json_str = json.dumps(data)

@@ -67,17 +67,19 @@ class ServerApp:
                         text="🛑 [SYSTEM]: Остановка сервера...", source="main"
                     )
                 )
-                self._server_task.cancel()
+                await self.server.stop()
+
                 try:
                     await self._server_task
                 except asyncio.CancelledError:
+                    pass
+                finally:
+                    self._server_task = None
                     await self.bus.publish(
                         ConsoleLogEvent(
                             text="✅ [SYSTEM]: Сервер успешно остановлен", source="main"
                         )
                     )
-                finally:
-                    self._server_task = None
 
     def _setup_server_subscriptions(self):
         self.bus.subscribe(ServerConnection, self._handle_server_toggle)
@@ -88,6 +90,9 @@ class ServerApp:
             await self.gui.main_loop()
         except Exception as e:
             print(f"❌ Ошибка при работе приложения: {e}")
+        finally:
+            if self._server_task and not self._server_task.done():
+                await self.server.stop()
 
 
 async def main():
@@ -100,4 +105,4 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
-        print("\n--- Сервер остановлен ---")
+        print("\n--- Процесс завершен ---")

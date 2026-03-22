@@ -25,14 +25,12 @@ class DozorniyApp(UiAbstract):
     async def route_change(self, e: ft.RouteChangeEvent | None = None):
         route = e.route if e else self.page.route
         fullscreen = False
-        print(route)
         new_content: ft.Container
         if route == "/":
             new_content = DashboardPage(output_log=self.log_window, bus=self.bus)
         elif route == "/logs":
             new_content = LogsPage(list_log=self.list_log)
         elif route.startswith("/demo"):
-            print(route.split("_"))
             new_content = DemonstrationPage(
                 user_id=int(route.split("_")[1]), bus=self.bus
             )
