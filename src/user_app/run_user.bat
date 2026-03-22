@@ -16,15 +16,17 @@ echo [LAUNCHER] Starting Dozorniy Agent...
 
 :CHECK_CONFIG
 if not exist "%ENV_FILE%" (
-    echo VERSION=1.0.0 > "%ENV_FILE%"
-    set "LOCAL_VER=1.0.0"
+    echo VERSION=0.0.0 > "%ENV_FILE%"
+    set "LOCAL_VER=0.0.0"
 ) else (
-    set "LOCAL_VER=1.0.0"
+    set "LOCAL_VER=0.0.0"
     for /f "tokens=2 delims==" %%a in ('findstr /I "VERSION=" "%ENV_FILE%"') do (
         set "val=%%a"
         set "LOCAL_VER=!val: =!"
     )
 )
+:: Отрезаем 'v', если она есть в локальной версии
+set "LOCAL_VER=!LOCAL_VER:v=!"
 echo [DEBUG] Local Version: !LOCAL_VER!
 
 :GET_REMOTE_VER
@@ -35,6 +37,9 @@ if "%REMOTE_VER%"=="" (
     echo [SKIP] Could not fetch remote version.
     goto START_APP
 )
+
+:: МАГИЯ: Отрезаем букву 'v' из версии с GitHub
+set "REMOTE_VER=!REMOTE_VER:v=!"
 echo [DEBUG] Remote Version: %REMOTE_VER%
 
 if "%LOCAL_VER%"=="%REMOTE_VER%" goto START_APP

@@ -1,12 +1,12 @@
 [Setup]
 AppId={{D0208-A63E-4B7C-A5D8-E0F1D1E0C001}}
 AppName=Dozorniy Agent
-AppVersion=1.0
+AppVersion=1.0.0
 AppPublisher=HypeHack
-DefaultDirName={pf}\DozorniyAgent
+DefaultDirName={userpf}\DozorniyAgent
 DefaultGroupName=Dozorniy
-PrivilegesRequired=admin
-CreateUninstallRegKey=no
+PrivilegesRequired=none
+CreateUninstallRegKey=yes
 AppendDefaultGroupName=no
 OutputDir=.
 OutputBaseFilename=DozorniyAgent_Setup
@@ -18,16 +18,19 @@ Source: "dist\user_app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 Source: "run_user.bat"; DestDir: "{app}"; Flags: ignoreversion
 Source: "silent_run.vbs"; DestDir: "{app}"; Flags: ignoreversion
 
+[Icons]
+Name: "{userstartup}\DozorniyAgent"; Filename: "{app}\silent_run.vbs"; WorkingDir: "{app}"; IconFilename: "{app}\user_app.exe"
+
 [Code]
 var
   ConfigPage: TInputQueryWizardPage;
 
 procedure InitializeWizard;
 begin
-  ConfigPage := CreateInputQueryPage(wpWelcome, 'Настройка', 'Введите данные', '');
-  ConfigPage.Add('Имя:', False);
-  ConfigPage.Add('IP:', False);
-  ConfigPage.Add('Порт:', False);
+  ConfigPage := CreateInputQueryPage(wpWelcome, 'Настройка', 'Данные агента', '');
+  ConfigPage.Add('Имя агента:', False);
+  ConfigPage.Add('IP сервера:', False);
+  ConfigPage.Add('Порт сервера:', False);
   ConfigPage.Values[0] := 'Agent_1';
   ConfigPage.Values[1] := '127.0.0.1';
   ConfigPage.Values[2] := '8888';
@@ -48,8 +51,4 @@ begin
 end;
 
 [Run]
-Filename: "schtasks"; Parameters: "/create /tn ""DozorniyAgent"" /tr ""wscript.exe '{app}\silent_run.vbs' '{app}\run_user.bat'"" /sc onlogon /rl highest /f"; Flags: runhidden
-Filename: "schtasks"; Parameters: "/run /tn ""DozorniyAgent"""; Flags: runhidden
-
-[UninstallRun]
-Filename: "schtasks"; Parameters: "/delete /tn ""DozorniyAgent"" /f"; Flags: runhidden
+Filename: "wscript.exe"; Parameters: """{app}\silent_run.vbs"""; Flags: runhidden nowait
