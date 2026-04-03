@@ -1,4 +1,5 @@
 import base64
+from ctypes import cast
 from webbrowser import get
 
 import flet as ft
@@ -15,6 +16,7 @@ class ListUsers(ft.ListView):
     def __init__(self, bus: EventBus):
         super().__init__(expand=True, spacing=10, padding=10)
         self.bus = bus
+        self.sorted = True
 
     async def screenupdate(self, event: FrameData):
         if not self.page:
@@ -22,6 +24,9 @@ class ListUsers(ft.ListView):
         card = self._global_user_dict.get(event.user_id)
         if card and card in self.controls:
             card.update_image(event.base64_img)
+
+    def get_user_name(self, card: UserItem):
+        return card.name.lower
 
     def did_mount(self):
         self.bus.subscribe(UpdateUserEvent, self.update_user)
@@ -46,6 +51,9 @@ class ListUsers(ft.ListView):
                 new_card = UserItem(event.user_id, event.user_name, bus=self.bus)
                 self._global_user_dict[event.user_id] = new_card
                 self.controls.append(new_card)
+
+        if self.sorted:
+            self.controls.sort(key=lambda card: getattr(card, "user_name", ""))
 
         if self.page:
             self.update()

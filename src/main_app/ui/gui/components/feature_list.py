@@ -31,7 +31,7 @@ class FeatureList(ft.Container):
     async def render_features(self, event: ResponseFeatureList):
         if not self.page:
             return
-        
+
         self.command_list.controls.clear()
         for meta in event.content:
             self.command_list.controls.append(

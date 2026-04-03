@@ -20,6 +20,7 @@ class UserItem(ft.Container):
         )
         self.user_id = user_id
         self.ink = True
+        self.name = name
         self.bus = bus
         self._init_state_controls(name)
         self.on_click = self.callback

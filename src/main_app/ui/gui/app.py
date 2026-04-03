@@ -71,11 +71,13 @@ class DozorniyApp(UiAbstract):
         self.page = page
         self.page.on_route_change = self.route_change
         self.page.data = self
+        self.page.theme_mode = ft.ThemeMode.DARK
         self.page.title = "Dozorniy RMM"
         self.page.theme = ft.Theme(
-            color_scheme=get_catppuccin_theme(),
+            color_scheme_seed="green",
             page_transitions=ft.PageTransitionsTheme(
-                linux=ft.PageTransitionTheme.OPEN_UPWARDS
+                linux=ft.PageTransitionTheme.OPEN_UPWARDS,
+                windows=ft.PageTransitionTheme.OPEN_UPWARDS,
             ),
         )
         self.page.bgcolor = ft.Colors.SURFACE_DIM
