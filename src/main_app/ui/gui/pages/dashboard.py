@@ -3,11 +3,7 @@ import asyncio
 import flet as ft
 
 from core.events import AbstractEvent, EventBus
-from ui.gui.components.user_list import ListUsers
-
-
-class SortUsers(AbstractEvent):
-    enable: bool
+from ui.gui.components.user_list import ListUsers, SortUsers
 
 
 class DashboardPage(ft.Container):
