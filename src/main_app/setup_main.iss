@@ -11,13 +11,17 @@ OutputBaseFilename=DozorniyServer_Setup
 Compression=lzma
 SolidCompression=yes
 
+[Dirs]
+Name: "{app}"; Permissions: users-full
+
 [Files]
 Source: "dist\main_app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "run_main.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\updater.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\Dozorniy Server"; Filename: "{app}\main_app.exe"
 Name: "{commondesktop}\Dozorniy Server"; Filename: "{app}\main_app.exe"
+Name: "{group}\Update Server"; Filename: "{app}\updater.exe"
 
 [Run]
 Filename: "{app}\main_app.exe"; Description: "Запустить Dozorniy Server"; Flags: nowait postinstall skipifsilent
