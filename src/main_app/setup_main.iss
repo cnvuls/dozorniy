@@ -16,12 +16,12 @@ Name: "{app}"; Permissions: users-full
 
 [Files]
 Source: "dist\main_app\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "dist\updater.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\updater\*"; DestDir: "{app}\updater"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 [Icons]
 Name: "{group}\Dozorniy Server"; Filename: "{app}\main_app.exe"
 Name: "{commondesktop}\Dozorniy Server"; Filename: "{app}\main_app.exe"
-Name: "{group}\Update Server"; Filename: "{app}\updater.exe"
+Name: "{group}\Update Server"; Filename: "{app}\updater\updater.exe"
 
 [Run]
 Filename: "{app}\main_app.exe"; Description: "Запустить Dozorniy Server"; Flags: nowait postinstall skipifsilent
