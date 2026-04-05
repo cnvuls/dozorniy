@@ -21,7 +21,7 @@ Source: "dist\updater\*"; DestDir: "{app}\updater"; Flags: ignoreversion recurse
 [Icons]
 Name: "{group}\Dozorniy Server"; Filename: "{app}\main_app.exe"
 Name: "{commondesktop}\Dozorniy Server"; Filename: "{app}\main_app.exe"
-Name: "{group}\Update Server"; Filename: "{app}\updater\updater.exe"
+Name: "{group}\Update Server"; Filename: "{app}\updater\updater.exe"; WorkingDir: "{app}"
 
 [Run]
 Filename: "{app}\main_app.exe"; Description: "Запустить Dozorniy Server"; Flags: nowait postinstall skipifsilent
