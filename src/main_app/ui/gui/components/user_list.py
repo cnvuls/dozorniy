@@ -51,7 +51,8 @@ class ListUsers(ft.ListView):
         self.update()
 
     def will_unmount(self):
-        self.bus.unsubscribe(UpdateUserEvent, self.update_user)
+        #TODO: В следующий раз нужно будет сделать по другому работу updateuserevent
+        #self.bus.unsubscribe(UpdateUserEvent, self.update_user)
         self.bus.unsubscribe(FrameData, self.screenupdate)
 
     async def update_user(self, event: UpdateUserEvent):

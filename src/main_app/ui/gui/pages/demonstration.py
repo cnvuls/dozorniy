@@ -2,7 +2,7 @@ import base64
 
 import flet as ft
 
-from core.events import ConsoleLogEvent, EventBus
+from core.events import ConsoleLogEvent, EventBus, UpdateUserEvent
 from core.events.network import FrameData
 from features.screen.request import FrameTimeOption, ScreenRequest
 from ui.gui.components.feature_list import FeatureList
@@ -71,7 +71,7 @@ class DemonstrationPage(ft.Container):
 
         self.content = ft.Stack(controls=stack_controls)
 
-    async def close(self, _):
+    async def close(self):
         await self.bus.publish(
             ScreenRequest(
                 user_id=self.user_id,
@@ -93,6 +93,8 @@ class DemonstrationPage(ft.Container):
     def did_mount(self):
         self.page.run_task(self.start)
         self.bus.subscribe(FrameData, self.update_frame)
+        self.bus.subscribe(UpdateUserEvent, self.close_demo)
+
 
     def will_unmount(self):
         self.bus.unsubscribe(FrameData, self.update_frame)
@@ -113,6 +115,12 @@ class DemonstrationPage(ft.Container):
     async def restore_list(self):
         self.menu_container.content = self.feature_list
         self.update()
+    
+    async def close_demo(self, event: UpdateUserEvent):
+        if event.user_id == self.user_id:
+            await self.close()
+
+
 
     async def update_frame(self, event: FrameData):
         if event.user_id == self.user_id:
