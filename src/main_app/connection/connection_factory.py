@@ -7,7 +7,7 @@ from core.events import EventBus
 
 class ConnectionFactory(AbstractFactory):
     @staticmethod
-    def create_object(bus: EventBus, config: Config, **_) -> ConnectionBase:
+    def create_object(bus: EventBus, config: Config) -> ConnectionBase:
         types_of_connection: dict[str, ConnectionBase] = {
             "ws": web_socket.WebSocketConnection(bus)
         }
