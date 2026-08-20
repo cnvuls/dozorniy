@@ -3,7 +3,6 @@
 from dataclasses import dataclass
 from typing import Any, List, Optional, Tuple, Type
 
-from click import Option
 from pydantic import BaseModel
 
 from core.requests.base import RequestBase

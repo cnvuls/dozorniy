@@ -2,7 +2,6 @@ import base64
 from turtle import bgcolor
 
 import flet as ft
-from click.core import F
 from pydantic import Base64Bytes
 
 from core.events import EventBus

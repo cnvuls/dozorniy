@@ -14,8 +14,6 @@ uv run python -m PyInstaller --noconfirm --onedir --name "main_app" ^
 --add-data "%FLET_DIR%;flet" ^
 --collect-all "flet" ^
 --collect-all "websockets" ^
---collect-all "click" ^
---hidden-import="click" ^
 main.py
 
 echo [4/4] Final touch: Fix Flet Desktop path...

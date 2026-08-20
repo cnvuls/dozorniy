@@ -7,7 +7,6 @@ from core.dispatcher import RequestDispatcher, ResponseDispatcher
 from core.events import ConsoleLogEvent, EventBus
 from core.loader import autodiscover_features
 from core.registry import FeatureRegistry
-from core.responses.responsebus import ResponseBus
 from core.services.feature_service import FeatureService
 from ui.abstracts.base import ServerConnection
 from ui.gui_factory import GuiFactory
@@ -28,8 +27,7 @@ class ServerApp:
         self.config = config
 
         self.bus = EventBus()
-        self.resp_bus = ResponseBus()
-        self.dispatcher = ResponseDispatcher(self.resp_bus, self.bus)
+        self.dispatcher = ResponseDispatcher(self.bus)
         self.request_dispatcher = RequestDispatcher(self.bus)
         self.gui = GuiFactory.create_object(bus=self.bus)
         self.server = WebSocketConnection(self.bus)
@@ -46,10 +44,10 @@ class ServerApp:
             print("⚠️ Warning: No features found in Registry!")
 
         for meta in features_meta:
-            print(f"🔗 Linking: {meta.command_key} -> {meta.handler_cls.__name__}")
-            self.dispatcher.bind(meta.command_key, meta.response_model)
-            handler_instance = meta.handler_cls(self.bus)
-            self.resp_bus.register(meta.response_model, handler_instance)
+            if meta.response_model:
+                self.dispatcher.bind(meta.command_key, meta.response_model)
+                handler_instance = meta.handler_cls(self.bus)
+                self.bus.subscribe(meta.response_model, handler_instance.handle)
 
     async def _handle_server_toggle(self, event: ServerConnection):
         if event.data:

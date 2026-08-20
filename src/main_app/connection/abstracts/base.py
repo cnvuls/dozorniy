@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict
 
-from core.events import SendingCommand, UpdateUserEvent
+from core.events import EventBus, SendingCommand, UpdateUserEvent
 
 
 class ClientConnection(ABC):
@@ -23,8 +23,9 @@ class ClientConnection(ABC):
 
 
 class ConnectionBase(ABC):
-    def __init__(self) -> None:
+    def __init__(self, bus) -> None:
         self._clients: Dict[int, Any] = {}
+        self.bus: EventBus = bus
 
     @abstractmethod
     async def register_client(self, socket) -> int:

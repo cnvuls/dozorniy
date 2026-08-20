@@ -7,5 +7,5 @@ from core.events import EventBus
 class AbstractFactory(ABC):
     @staticmethod
     @abstractmethod
-    def create_object(bus: EventBus) -> Any:
+    def create_object(bus: EventBus, **kwargs: Any) -> Any:
         pass

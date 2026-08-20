@@ -38,8 +38,8 @@ class FeatureList(ft.Container):
                 ft.ListTile(
                     title=ft.Text(meta.name),
                     subtitle=ft.Text(f"{meta.version}, {meta.command_key}"),
-                    on_click=lambda _, m=meta: self.page.run_task(
-                        self._handle_click, m
+                    on_click=lambda _, m=meta: asyncio.create_task(
+                        self._handle_click(m),
                     ),
                 )
             )
