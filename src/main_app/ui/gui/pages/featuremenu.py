@@ -30,8 +30,8 @@ class CommandDialog(ft.AlertDialog):
         else:
             self.content = self.feature_list
 
-    async def close_dialog(self):
-        self.page.pop_dialog()
+    async def close_dialog(self, e: ft.ControlEvent):
+        e.page.pop_dialog()
 
     async def open_feature_form(self, meta: FeatureMeta):
         from ui.gui.components.feature_form import FeatureForm

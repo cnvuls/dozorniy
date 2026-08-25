@@ -23,7 +23,6 @@ class UserItem(ft.Container):
         self.bus = bus
         self._init_state_controls(name)
         self.on_click = self.callback
-        self.page: ft.Page
         self.content = ft.Column(
             tight=True,
             controls=[
@@ -31,8 +30,9 @@ class UserItem(ft.Container):
             ],
         )
 
-    def callback(self, _):
-        self.page.go(f"/demo_{self.user_id}")
+    def callback(self, e):
+        if isinstance(e.page, ft.Page):
+            e.page.go(f"/demo_{self.user_id}")
 
     def _init_state_controls(self, name: str):
         self.image_control = ft.Image(
@@ -80,11 +80,11 @@ class UserItem(ft.Container):
             ],
         )
 
-    async def message(self, _):
+    async def message(self, e):
         meta = await FeatureRegistry.get_by_key("message")
         if meta:
             dialog = CommandDialog(self.user_id, self.bus, meta)
-            self.page.show_dialog(dialog)
+            e.page.show_dialog(dialog)
 
     def update_image(self, imgbase64: bytes):
         b64_str = base64.b64encode(imgbase64).decode("utf-8")
@@ -92,6 +92,6 @@ class UserItem(ft.Container):
         if self.image_control.page:
             self.image_control.update()
 
-    def click_menu(self, _):
+    def click_menu(self, e):
         dialog = CommandDialog(self.user_id, self.bus)
-        self.page.show_dialog(dialog)
+        e.page.show_dialog(dialog)

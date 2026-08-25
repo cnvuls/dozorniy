@@ -9,7 +9,6 @@ from core.requests.base import RequestBase
 class FeatureForm(ft.Container):
     def __init__(self, meta: FeatureMeta, bus: EventBus, user_id, on_back):
         super().__init__()
-        self.page: ft.Page
         self.meta = meta
         self.bus = bus
         self.width = 300
@@ -47,15 +46,13 @@ class FeatureForm(ft.Container):
                 ft.Row(
                     [
                         ft.ElevatedButton("Отправить", on_click=self.send_command),
-                        ft.TextButton(
-                            "Назад", on_click=lambda _: self.page.run_task(self.on_back)
-                        ),
+                        ft.TextButton("Назад", on_click=self.on_back),
                     ]
                 ),
             ]
         )
 
-    async def send_command(self, e):
+    async def send_command(self):
         if not self.meta.args_model:
             return
 

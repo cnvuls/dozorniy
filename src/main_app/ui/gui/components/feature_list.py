@@ -29,8 +29,6 @@ class FeatureList(ft.Container):
         await self.bus.publish(RequestFeatureList())
 
     async def render_features(self, event: ResponseFeatureList):
-        if not self.page:
-            return
 
         self.command_list.controls.clear()
         for meta in event.content:
@@ -38,15 +36,15 @@ class FeatureList(ft.Container):
                 ft.ListTile(
                     title=ft.Text(meta.name),
                     subtitle=ft.Text(f"{meta.version}, {meta.command_key}"),
-                    on_click=lambda _, m=meta: asyncio.create_task(
-                        self._handle_click(m),
-                    ),
+                    data=meta,
+                    on_click=self._handle_click,
                 )
             )
 
         self.update()
 
-    async def _handle_click(self, meta: FeatureMeta):
+    async def _handle_click(self, e):
+        meta = e.control.data
         if not meta.args_model:
             await self.bus.publish(event=meta.request_model)
         else:

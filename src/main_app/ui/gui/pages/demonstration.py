@@ -1,5 +1,5 @@
 import base64
-
+import asyncio
 import flet as ft
 
 from core.events import ConsoleLogEvent, EventBus, UpdateUserEvent
@@ -71,7 +71,7 @@ class DemonstrationPage(ft.Container):
 
         self.content = ft.Stack(controls=stack_controls)
 
-    async def close(self):
+    async def close(self, e: ft.ControlEvent | None = None):
         await self.bus.publish(
             ScreenRequest(
                 user_id=self.user_id,
@@ -79,8 +79,9 @@ class DemonstrationPage(ft.Container):
                 frame_time=FrameTimeOption.SLOW,
             )
         )
-        self.page.go("/")
-
+        page = e.page if e else self.page
+        if isinstance(page, ft.Page):
+            page.go("/")    
     async def start(self):
         await self.bus.publish(
             ScreenRequest(
@@ -91,7 +92,8 @@ class DemonstrationPage(ft.Container):
         )
 
     def did_mount(self):
-        self.page.run_task(self.start)
+        # e.run_task(self.start)
+        asyncio.create_task(self.start())
         self.bus.subscribe(FrameData, self.update_frame)
         self.bus.subscribe(UpdateUserEvent, self.close_demo)
 
@@ -99,7 +101,7 @@ class DemonstrationPage(ft.Container):
     def will_unmount(self):
         self.bus.unsubscribe(FrameData, self.update_frame)
 
-    async def toggle_menu(self, e):
+    async def toggle_menu(self):
         self.menu_container.visible = not self.menu_container.visible
         self.update()
 
