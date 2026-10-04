@@ -72,7 +72,7 @@ class WebSocketConnection(ConnectionBase):
         """Остановка сервера и отключение всех клиентов."""
         if self._stop_event:
             self._stop_event.set()
-        
+
         if self._server_instance:
             self._server_instance.close()
             await self._server_instance.wait_closed()
@@ -104,7 +104,7 @@ class WebSocketConnection(ConnectionBase):
 
         await self.bus.publish(
             InfoLogEvent(
-                text=f"Server is activated on ws://{get_local_ip()}:{port}",
+                text=f"Server is activated on ws://{get_local_ip()}:{port}\nServer host: {socket.gethostname()}.local",
                 source="websocket",
             )
         )
