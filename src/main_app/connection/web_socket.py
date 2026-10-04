@@ -98,7 +98,7 @@ class WebSocketConnection(ConnectionBase):
             await self.unregister_client(client_id)
 
     async def main_loop(self):
-        host = "0.0.0.0"
+        host = None
         port = 8888
         self._stop_event = asyncio.Event()
 
