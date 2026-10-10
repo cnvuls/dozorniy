@@ -7,6 +7,7 @@ from websockets import serve
 
 from connection.abstracts import ConnectionBase
 from core.events import (
+    ErrorLogEvent,
     EventBus,
     IncomingRawMessage,
     InfoLogEvent,
@@ -41,12 +42,18 @@ class WebSocketConnection(ConnectionBase):
         self.bus.subscribe(SendingCommand, self.send_message)
 
     async def send_message(self, event: SendingCommand) -> None:
-        client_data = self._clients.get(event.user_id)
-        if client_data:
-            await client_data["socket"].send(event.text)
+        try:
+            client_data = self._clients.get(event.user_id)
+            if client_data:
+                await client_data["socket"].send(event.text)
+        except Exception as e:
+            await self.bus.publish(
+                ErrorLogEvent(text=f"Error: {e}", source="connection")
+            )
+            await self.unregister_client(event.user_id)
 
     async def register_client(self, socket: websockets.ServerConnection) -> int:
-        user_name = str(await socket.recv())
+        user_name = str(await asyncio.wait_for(socket.recv(), timeout=5))
         user_id = next(self.counter)
 
         self._clients[user_id] = {"socket": socket, "name": user_name}
@@ -56,10 +63,15 @@ class WebSocketConnection(ConnectionBase):
         return user_id
 
     async def broadcast_message(self, text: str) -> None:
-        if self._clients:
-            await asyncio.gather(
-                *[data["socket"].send(text) for _, data in self._clients.values()],
-                return_exceptions=True,
+        try:
+            if self._clients:
+                await asyncio.gather(
+                    *[data["socket"].send(text) for data in self._clients.values()],
+                    return_exceptions=True,
+                )
+        except Exception as e:
+            await self.bus.publish(
+                ErrorLogEvent(text=f"Error: {e}", source="connection")
             )
 
     async def unregister_client(self, client_id: int) -> None:
@@ -84,19 +96,23 @@ class WebSocketConnection(ConnectionBase):
         ]
         if tasks:
             await asyncio.gather(*tasks, return_exceptions=True)
-        self._clients.clear()
+
+        for clients in list(self._clients.keys()):
+            await self.unregister_client(clients)
 
     async def handler_client(self, websocket: websockets.ServerConnection) -> None:
-        client_id = await self.register_client(websocket)
+        client_id = None
         try:
+            client_id = await self.register_client(websocket)
             async for message in websocket:
                 await self.bus.publish(
                     IncomingRawMessage(text=str(message), user_id=client_id)
                 )
-        except websockets.exceptions.ConnectionClosed:
+        except (websockets.exceptions.ConnectionClosed, TimeoutError):
             pass
         finally:
-            await self.unregister_client(client_id)
+            if client_id:
+                await self.unregister_client(client_id)
 
     async def main_loop(self):
         host = None
