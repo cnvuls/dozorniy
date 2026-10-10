@@ -1,7 +1,7 @@
 import asyncio
 import socket
 from typing import Dict
-
+from itertools import count as cnt
 import websockets
 from websockets import serve
 
@@ -37,7 +37,7 @@ class WebSocketConnection(ConnectionBase):
         self.bus = bus
         self._server_instance = None
         self._stop_event = None
-
+        self.counter = cnt(1)
         self.bus.subscribe(SendingCommand, self.send_message)
 
     async def send_message(self, event: SendingCommand) -> None:
@@ -47,7 +47,8 @@ class WebSocketConnection(ConnectionBase):
 
     async def register_client(self, socket: websockets.ServerConnection) -> int:
         user_name = str(await socket.recv())
-        user_id = len(self._clients) + 1
+        user_id = next(self.counter)
+
         self._clients[user_id] = {"socket": socket, "name": user_name}
         await self.bus.publish(
             UpdateUserEvent(action="connect", user_id=user_id, user_name=user_name)
