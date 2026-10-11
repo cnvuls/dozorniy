@@ -1,0 +1,60 @@
+name: Build Windows Server (PyInstaller)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install dependencies & PyInstaller
+        working-directory: src/main_app
+        run: |
+          uv sync
+          uv add pyinstaller flet-desktop
+      - name: Compile with PyInstaller
+        working-directory: src/main_app
+        shell: cmd
+        run: |
+          uv run pyinstaller ^
+            --noconfirm ^
+            --onedir ^
+            --console ^
+            --name main_app ^
+            --collect-all flet ^
+            --collect-all flet_desktop ^
+            --collect-all websockets ^
+            --collect-all pydantic ^
+            --collect-all pydantic_settings ^
+            --collect-all aiofiles ^
+            --collect-all catppuccin ^
+            --collect-all mss ^
+            --add-data "features;features" ^
+            --add-data "ui;ui" ^
+            --add-data "core;core" ^
+            --add-data "connection;connection" ^
+            --add-data "default.json;." ^
+            main.py
+          
+      - name: Package ZIP
+        working-directory: src/main_app
+        shell: pwsh
+        run: |
+          Compress-Archive -Path dist/main_app -DestinationPath main_app.zip
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: main_app-windows-pyinstaller
+          path: src/main_app/main_app.zip
