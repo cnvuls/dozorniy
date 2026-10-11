@@ -23,12 +23,13 @@ jobs:
         working-directory: src/main_app
         run: |
           uv sync
-          uv add pyinstaller flet-desktop
+          uv pip install pyinstaller flet==0.82.2 flet-desktop==0.82.2
+
       - name: Compile with PyInstaller
         working-directory: src/main_app
         shell: cmd
         run: |
-          uv run pyinstaller ^
+          uv run --no-sync pyinstaller ^
             --noconfirm ^
             --onedir ^
             --console ^
@@ -40,19 +41,19 @@ jobs:
             --collect-all pydantic_settings ^
             --collect-all aiofiles ^
             --collect-all catppuccin ^
-            --collect-all mss ^
             --add-data "features;features" ^
             --add-data "ui;ui" ^
             --add-data "core;core" ^
             --add-data "connection;connection" ^
             --add-data "default.json;." ^
             main.py
-          
+
       - name: Package ZIP
         working-directory: src/main_app
         shell: pwsh
         run: |
           Compress-Archive -Path dist/main_app -DestinationPath main_app.zip
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
