@@ -25,6 +25,14 @@ class FrameData(AbstractEvent):
     user_id: int
 
 
+class PullUserList(AbstractEvent):
+    pass
+
+
+class PushUserList(AbstractEvent):
+    users: list[tuple[int, str]]
+
+
 class UpdateUserEvent(AbstractEvent):
     action: Literal["connect", "disconnect"]
     user_id: int

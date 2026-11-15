@@ -52,15 +52,19 @@ class FeatureForm(ft.Container):
             ]
         )
 
-    async def send_command(self):
-        if not self.meta.args_model:
-            return
-
+    async def send_command(self, e=None):
         data = {name: ctrl.value for name, ctrl in self.inputs.items()}
         data["user_id"] = self.user_id
 
         try:
-            validated = self.meta.args_model(**data)
+            if self.meta.args_model:
+                validated = self.meta.args_model(**data)
+            elif self.meta.request_model:
+                validated = self.meta.request_model(user_id=self.user_id)
+            else:
+                validated = RequestBase(
+                    type=self.meta.command_key, user_id=self.user_id
+                )
             payload = validated.model_dump_json()
             await self.bus.publish(SendingCommand(user_id=self.user_id, text=payload))
 

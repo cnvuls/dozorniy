@@ -81,7 +81,8 @@ class DemonstrationPage(ft.Container):
         )
         page = e.page if e else self.page
         if isinstance(page, ft.Page):
-            page.go("/")    
+            page.go("/")
+
     async def start(self):
         await self.bus.publish(
             ScreenRequest(
@@ -97,11 +98,11 @@ class DemonstrationPage(ft.Container):
         self.bus.subscribe(FrameData, self.update_frame)
         self.bus.subscribe(UpdateUserEvent, self.close_demo)
 
-
     def will_unmount(self):
         self.bus.unsubscribe(FrameData, self.update_frame)
+        self.bus.unsubscribe(UpdateUserEvent, self.close_demo)
 
-    async def toggle_menu(self):
+    async def toggle_menu(self, e=None):
         self.menu_container.visible = not self.menu_container.visible
         self.update()
 
@@ -114,15 +115,13 @@ class DemonstrationPage(ft.Container):
         self.menu_container.content = form
         self.update()
 
-    async def restore_list(self):
+    async def restore_list(self, e=None):
         self.menu_container.content = self.feature_list
         self.update()
-    
+
     async def close_demo(self, event: UpdateUserEvent):
-        if event.user_id == self.user_id:
+        if event.user_id == self.user_id and event.action == "disconnect":
             await self.close()
-
-
 
     async def update_frame(self, event: FrameData):
         if event.user_id == self.user_id:

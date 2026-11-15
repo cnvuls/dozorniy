@@ -15,6 +15,7 @@ from core.events import (
     UpdateUserEvent,
 )
 from core.events.base import AbstractEvent
+from core.events.network import PullUserList, PushUserList
 
 
 def get_local_ip() -> str:
@@ -40,6 +41,7 @@ class WebSocketConnection(ConnectionBase):
         self._stop_event = None
         self.counter = cnt(1)
         self.bus.subscribe(SendingCommand, self.send_message)
+        self.bus.subscribe(PullUserList, self.push_userlist)
 
     async def send_message(self, event: SendingCommand) -> None:
         try:
@@ -73,6 +75,13 @@ class WebSocketConnection(ConnectionBase):
             await self.bus.publish(
                 ErrorLogEvent(text=f"Error: {e}", source="connection")
             )
+
+    async def push_userlist(self, event: PullUserList):
+        listusers = []
+        for user_id in self._clients:
+            listusers.append((user_id, self._clients[user_id]["name"]))
+
+        await self.bus.publish(PushUserList(users=listusers))
 
     async def unregister_client(self, client_id: int) -> None:
         if client_id in self._clients:
